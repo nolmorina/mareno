@@ -480,6 +480,19 @@ const currentUser = user.username;
   }
   .adm-np-submit:hover { opacity: .78; }
 
+  /* ── EXTRA IMAGES ───────────────────────────────────────────── */
+  .adm-extra-imgs { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 6px; }
+  .adm-extra-img-wrap { position: relative; width: 80px; height: 80px; border: 1px solid var(--border); overflow: hidden; background: #e0dbd2; flex-shrink: 0; }
+  .adm-extra-img-thumb { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .adm-extra-img-rm {
+    position: absolute; top: 3px; right: 3px;
+    width: 20px; height: 20px; background: rgba(26,26,26,.65); color: #fff;
+    border: none; font-size: 13px; line-height: 1;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; transition: background .15s;
+  }
+  .adm-extra-img-rm:hover { background: var(--danger); }
+
   /* ── ACTIVITY LOG ────────────────────────────────────────────── */
   .adm-log-section { margin-top: 48px; }
   .adm-log-filters {
@@ -866,6 +879,11 @@ function collect() {
     p.avail = [];
     card.querySelectorAll('.adm-sz.in').forEach(b => p.avail.push(b.dataset.size));
 
+    p.images = [];
+    card.querySelectorAll('.adm-extra-img-url').forEach(inp => {
+      if (inp.value.trim()) p.images.push(inp.value.trim());
+    });
+
     p.colors = [];
     card.querySelectorAll('.adm-color-chip').forEach(ce => {
       p.colors.push({ bg: ce.querySelector('input[type="color"]').value, title: ce.querySelector('.adm-cn').value });
@@ -1055,6 +1073,21 @@ function cardHTML(p, i, total) {
           <div class="adm-size-grid">${sizeBtns}</div>
           <p class="adm-sizes-hint">Filled = available &nbsp;·&nbsp; Faded = unavailable</p>
         </div>
+      </div>
+
+      <!-- Additional Images — full width -->
+      <div class="adm-section adm-detail-full">
+        <div class="adm-section-title">Additional Images</div>
+        <div class="adm-extra-imgs" id="extra-imgs-${p.id}">
+          ${(p.images || []).map(src => `
+            <div class="adm-extra-img-wrap">
+              <img class="adm-extra-img-thumb" src="${esc(src)}" alt="" />
+              <button class="adm-extra-img-rm" onclick="removeExtraImg(this)" aria-label="Remove image">×</button>
+              <input type="hidden" class="adm-extra-img-url" value="${esc(src)}" />
+            </div>`).join('')}
+        </div>
+        <button class="adm-btn-dashed" onclick="addExtraImg(${p.id})" style="margin-top:8px">+ Add Image</button>
+        <p style="font-size:9px;color:var(--taupe);margin-top:6px">Images appear in the product gallery in order. The main image (above) is always first.</p>
       </div>
 
       <!-- Filter tags — full width -->
@@ -1273,6 +1306,33 @@ function toggleSize(btn) {
   const isIn = btn.classList.contains('in');
   btn.classList.toggle('in', !isIn);
   btn.classList.toggle('out', isIn);
+}
+
+/* ── EXTRA IMAGES ──────────────────────────────────────────────── */
+function removeExtraImg(btn) { btn.closest('.adm-extra-img-wrap').remove(); }
+
+function addExtraImg(id) {
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = 'image/*';
+  input.onchange = async function () {
+    const file = this.files[0];
+    if (!file) return;
+    showToast('Uploading image…');
+    try {
+      const url = await uploadFile(file);
+      const container = document.getElementById(`extra-imgs-${id}`);
+      const wrap = document.createElement('div');
+      wrap.className = 'adm-extra-img-wrap';
+      wrap.innerHTML = `
+        <img class="adm-extra-img-thumb" src="${url}" alt="" />
+        <button class="adm-extra-img-rm" onclick="removeExtraImg(this)" aria-label="Remove image">×</button>
+        <input type="hidden" class="adm-extra-img-url" value="${url}" />`;
+      container.appendChild(wrap);
+      showToast('Image added');
+    } catch (err) { showToast('Upload failed: ' + err.message); }
+  };
+  input.click();
 }
 
 /* ── COLOURS ───────────────────────────────────────────────────── */

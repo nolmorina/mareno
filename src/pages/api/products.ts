@@ -41,6 +41,10 @@ function sanitizeProduct(raw: any): Record<string, unknown> | null {
     ? raw.avail.slice(0, 10).map((s: any) => String(s).slice(0, 10))
     : [];
 
+  const images = Array.isArray(raw.images)
+    ? raw.images.slice(0, 20).map((s: any) => String(s).slice(0, 500)).filter(Boolean)
+    : [];
+
   return {
     id,
     order,
@@ -52,6 +56,7 @@ function sanitizeProduct(raw: any): Record<string, unknown> | null {
     priceOld: String(raw.priceOld ?? '').slice(0, 30),
     badge:    String(raw.badge    ?? '').slice(0, 50),
     img:      String(raw.img      ?? '').slice(0, 500),
+    images,
     desc:     String(raw.desc     ?? '').slice(0, 2000),
     colors,
     specs,

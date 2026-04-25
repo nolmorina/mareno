@@ -12,6 +12,7 @@ const ProductSchema = new Schema({
   priceOld: { type: String, default: '' },
   badge:    { type: String, default: '' },
   img:      { type: String, default: '' },
+  images:   [String],
   colors:   [{ bg: String, title: String }],
   desc:     { type: String, default: '' },
   specs:    [[String]],

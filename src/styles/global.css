@@ -565,8 +565,13 @@ footer { background: var(--charcoal); color: var(--ivory); padding: 72px 60px 44
 .modal-overlay.open { opacity: 1; pointer-events: all; }
 .modal { background: var(--ivory); width: 100%; max-width: 900px; display: grid; grid-template-columns: 1fr 1fr; transform: translateX(48px); transition: transform 0.35s cubic-bezier(0.25,0.46,0.45,0.94); overflow-y: auto; }
 .modal-overlay.open .modal { transform: translateX(0); }
-.modal-img-panel { position: relative; min-height: 100%; display: flex; align-items: center; justify-content: center; overflow: hidden; }
-.modal-img-panel img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center top; z-index: 1; }
+.modal-img-panel { position: relative; min-height: 100%; overflow: hidden; }
+.modal-img-scroll { display: flex; width: 100%; height: 100%; min-height: inherit; overflow-x: auto; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+.modal-img-scroll::-webkit-scrollbar { display: none; }
+.modal-img-scroll img { flex-shrink: 0; width: 100%; height: 100%; object-fit: cover; object-position: center top; scroll-snap-align: start; }
+.modal-img-dots { position: absolute; bottom: 52px; left: 0; right: 0; display: flex; justify-content: center; gap: 7px; z-index: 10; pointer-events: none; }
+.modal-img-dot { width: 5px; height: 5px; border-radius: 50%; background: rgba(255,255,255,0.35); border: none; cursor: pointer; padding: 0; transition: background 0.2s, transform 0.2s; pointer-events: all; }
+.modal-img-dot.active { background: #fff; transform: scale(1.3); }
 .modal-close { position: absolute; top: 18px; right: 18px; width: 38px; height: 38px; background: var(--ivory); border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 22px; line-height: 1; z-index: 10; color: var(--charcoal); transition: background 0.2s; }
 .modal-close:hover { background: var(--sand); }
 .modal-body { padding: 52px 48px; overflow-y: auto; display: flex; flex-direction: column; }

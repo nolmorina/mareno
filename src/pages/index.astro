@@ -195,11 +195,35 @@ window.openModal = function(id) {
   const body = document.getElementById('modal-body');
 
   imgPanel.style.background = 'var(--sand)';
+
+  const allImgs = [p.img, ...(p.images || [])].filter(Boolean);
+  const slidesHTML = allImgs.map(src =>
+    `<img src="${esc(src)}" alt="${esc(p.name)}">`
+  ).join('');
+  const dotsHTML = allImgs.length > 1
+    ? `<div class="modal-img-dots" id="modal-dots-${id}">
+        ${allImgs.map((_, i) =>
+          `<button class="modal-img-dot${i === 0 ? ' active' : ''}" onclick="scrollToSlide(${i},${id})" aria-label="Image ${i + 1}"></button>`
+        ).join('')}
+       </div>`
+    : '';
+
   imgPanel.innerHTML = `
     <button class="modal-close" onclick="closeModal()" aria-label="Close">×</button>
-    <img src="${esc(p.img)}" alt="${esc(p.name)}">
+    <div class="modal-img-scroll" id="modal-scroll-${id}">${slidesHTML}</div>
+    ${dotsHTML}
     <div class="modal-img-cat">${esc(p.cat.toUpperCase())}</div>
   `;
+
+  if (allImgs.length > 1) {
+    const scroller = document.getElementById(`modal-scroll-${id}`);
+    scroller.addEventListener('scroll', () => {
+      const idx = Math.round(scroller.scrollLeft / scroller.clientWidth);
+      document.querySelectorAll(`#modal-dots-${id} .modal-img-dot`).forEach((d, i) => {
+        d.classList.toggle('active', i === idx);
+      });
+    }, { passive: true });
+  }
 
   const sel = selectedSize[id] ?? '';
   const sizesHTML = p.sizes.map(s => {
@@ -228,6 +252,11 @@ window.openModal = function(id) {
 
   document.getElementById('modal-overlay').classList.add('open');
   document.body.style.overflow = 'hidden';
+};
+
+window.scrollToSlide = function(idx, id) {
+  const scroller = document.getElementById(`modal-scroll-${id}`);
+  if (scroller) scroller.scrollTo({ left: idx * scroller.clientWidth, behavior: 'smooth' });
 };
 
 window.closeModal = function() {
