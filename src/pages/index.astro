@@ -1,0 +1,299 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Nav from '../components/Nav.astro';
+import Hero from '../components/Hero.astro';
+import Collection from '../components/Collection.astro';
+import Editorial from '../components/Editorial.astro';
+import Values from '../components/Values.astro';
+import Newsletter from '../components/Newsletter.astro';
+import Footer from '../components/Footer.astro';
+import Modal from '../components/Modal.astro';
+import { connectDB } from '../lib/db';
+import { Product, Settings } from '../lib/models';
+
+/* ── Fetch from MongoDB ───────────────────────────────────────── */
+await connectDB();
+
+const [productDocs, heroDoc, editorialDoc] = await Promise.all([
+  Product.find({}).sort({ order: 1 }).lean(),
+  Settings.findOne({ key: 'hero' }).lean() as any,
+  Settings.findOne({ key: 'editorial' }).lean() as any,
+]);
+
+const heroImg      = (heroDoc?.value?.img      as string) ?? '';
+const editorialImg = (editorialDoc?.value?.img as string) ?? '';
+
+// Serialize for client script
+const PRODUCTS_JSON = JSON.stringify(productDocs);
+---
+
+<Layout>
+  <Nav />
+  <Hero heroImg={heroImg} />
+  <Collection />
+  <Editorial editorialImg={editorialImg} />
+  <Values />
+  <Newsletter />
+  <Footer />
+  <Modal />
+</Layout>
+
+<script define:vars={{ PRODUCTS_JSON }}>
+/* ─── PRODUCT DATA from server ──────────────────────────────────── */
+const PRODUCTS = JSON.parse(PRODUCTS_JSON);
+
+const selectedSize = {};
+
+/* ─── SCROLL REVEAL OBSERVER ───────────────────────────────────── */
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+      observer.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+
+/* ─── HTML ESCAPE ───────────────────────────────────────────────── */
+function esc(s) {
+  return String(s ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+}
+
+/* ─── RENDER PRODUCT GRID ──────────────────────────────────────── */
+function renderProductGrid() {
+  const grid = document.getElementById('products-grid');
+  if (!grid) return;
+
+  const visible = PRODUCTS
+    .filter(p => !p.hidden)
+    .sort((a, b) => a.order - b.order);
+
+  grid.innerHTML = visible.map((p, i) => {
+    const badge = p.badge ? `<span class="prod-badge">${esc(p.badge)}</span>` : '';
+    const priceOld = p.priceOld ? `<span class="prod-price-old">${esc(p.priceOld)}</span>` : '';
+    const colors = (p.colors ?? []).map((c, ci) =>
+      `<span class="color-dot${ci === 0 ? ' active' : ''}" style="background:${esc(c.bg)};" title="${esc(c.title)}"></span>`
+    ).join('');
+
+    return `
+      <article class="product-card reveal-scale" data-cats="${esc(p.cats)}" data-pid="${p.id}"
+        onclick="openModal(${p.id})" style="animation-delay:${i * 0.07}s">
+        <div class="prod-img-wrap">
+          <img src="${esc(p.img)}" alt="${esc(p.name)}" loading="lazy" />
+          ${badge}
+          <button class="prod-wishlist" onclick="event.stopPropagation();toggleWishlist(this)" aria-label="Save to wishlist">
+            <svg width="17" height="15" viewBox="0 0 17 15" fill="none" stroke="#1A1A1A" stroke-width="1.2">
+              <path d="M8.5 13.5S1 9 1 4.5a4 4 0 0 1 7.5-2A4 4 0 0 1 16 4.5c0 4.5-7.5 9-7.5 9z"/>
+            </svg>
+          </button>
+          <button class="prod-quick" onclick="event.stopPropagation();openModal(${p.id})">Quick View</button>
+        </div>
+        <div class="prod-info">
+          <p class="prod-cat">${esc(p.cat)}</p>
+          <h3 class="prod-name">${esc(p.name)}</h3>
+          <div class="prod-price-row">
+            <span class="prod-price">${esc(p.price)}</span>
+            ${priceOld}
+          </div>
+          <div class="prod-colors">${colors}</div>
+        </div>
+      </article>`;
+  }).join('');
+
+  grid.querySelectorAll('.reveal-scale').forEach(el => observer.observe(el));
+}
+
+/* ─── PAGINATION STATE ──────────────────────────────────────────── */
+const PER_PAGE = 6;
+let currentPage = 1;
+let activeCat = 'all';
+
+function getFilteredCards() {
+  return [...document.querySelectorAll('#products-grid .product-card')]
+    .filter(c => activeCat === 'all' || (c.dataset.cats ?? '').split(' ').includes(activeCat));
+}
+
+function renderPage() {
+  const cards = getFilteredCards();
+  const total = Math.ceil(cards.length / PER_PAGE);
+  if (currentPage > total) currentPage = total || 1;
+  const start = (currentPage - 1) * PER_PAGE;
+  const end = start + PER_PAGE;
+
+  document.querySelectorAll('#products-grid .product-card').forEach(c => {
+    const inCat = activeCat === 'all' || (c.dataset.cats ?? '').split(' ').includes(activeCat);
+    const idx = cards.indexOf(c);
+    c.dataset.hidden = (!inCat || idx < start || idx >= end) ? 'true' : 'false';
+  });
+
+  renderPagination(total);
+}
+
+function renderPagination(total) {
+  const container = document.getElementById('pagination');
+  if (total <= 1) { container.innerHTML = ''; return; }
+  const prevDisabled = currentPage === 1 ? ' disabled' : '';
+  const nextDisabled = currentPage === total ? ' disabled' : '';
+  let html = `<button class="page-btn page-arrow" onclick="changePage(${currentPage - 1})"${prevDisabled} aria-label="Previous">‹</button>`;
+  for (let i = 1; i <= total; i++) {
+    html += `<button class="page-btn${i === currentPage ? ' active' : ''}" onclick="changePage(${i})">${i}</button>`;
+  }
+  html += `<button class="page-btn page-arrow" onclick="changePage(${currentPage + 1})"${nextDisabled} aria-label="Next">›</button>`;
+  container.innerHTML = html;
+}
+
+window.changePage = function(page) {
+  currentPage = page;
+  renderPage();
+};
+
+/* ─── INIT ─────────────────────────────────────────────────────── */
+renderProductGrid();
+renderPage();
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+/* ─── NAV SCROLL SHADOW ─────────────────────────────────────────── */
+window.addEventListener('scroll', () => {
+  document.getElementById('main-nav')?.classList.toggle('scrolled', window.scrollY > 60);
+}, { passive: true });
+
+/* ─── SMOOTH SCROLL HELPERS ─────────────────────────────────────── */
+function getStickyOffset() {
+  const ann = document.querySelector('.announcement');
+  const nav = document.querySelector('.nav');
+  return (ann?.offsetHeight ?? 0) + (nav?.offsetHeight ?? 0);
+}
+
+window.scrollSection = function(id, gap = 0) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const top = el.getBoundingClientRect().top + window.scrollY - getStickyOffset() - gap;
+  window.scroll({ top, behavior: 'smooth' });
+};
+
+window.scrollToNewIn = function() {
+  const btn = [...document.querySelectorAll('.cat-btn')].find(b => b.textContent?.trim() === 'New Arrivals');
+  window.filterCat('new', btn);
+};
+
+/* ─── CATEGORY FILTER ───────────────────────────────────────────── */
+window.filterCat = function(cat, clickedBtn) {
+  document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+  clickedBtn?.classList.add('active');
+  activeCat = cat;
+  currentPage = 1;
+  renderPage();
+  window.scrollSection('collection');
+};
+
+/* ─── MODAL ─────────────────────────────────────────────────────── */
+window.openModal = function(id) {
+  const p = PRODUCTS.find(x => x.id === id);
+  if (!p) return;
+  const imgPanel = document.getElementById('modal-img');
+  const body = document.getElementById('modal-body');
+
+  imgPanel.style.background = 'var(--sand)';
+  imgPanel.innerHTML = `
+    <button class="modal-close" onclick="closeModal()" aria-label="Close">×</button>
+    <img src="${esc(p.img)}" alt="${esc(p.name)}">
+    <div class="modal-img-cat">${esc(p.cat.toUpperCase())}</div>
+  `;
+
+  const sel = selectedSize[id] ?? '';
+  const sizesHTML = p.sizes.map(s => {
+    const unavail = !p.avail.includes(s);
+    const active = sel === s;
+    return `<button class="size-btn${unavail ? ' unavail' : ''}${active ? ' active' : ''}"
+      onclick="pickSize(${id},'${esc(s)}',this)"${unavail ? ' disabled' : ''}>${esc(s)}</button>`;
+  }).join('');
+
+  const specsHTML = p.specs.map(([k, v]) =>
+    `<div class="spec-row"><div class="spec-k">${esc(k)}</div><div class="spec-v">${esc(v)}</div></div>`
+  ).join('');
+
+  const oldHTML = p.priceOld ? `<span class="m-price-old">${esc(p.priceOld)}</span>` : '';
+
+  body.innerHTML = `
+    <p class="m-kicker">${esc(p.cat)}</p>
+    <h2 class="m-title">${esc(p.name)}</h2>
+    <div class="m-price">${esc(p.price)} ${oldHTML}</div>
+    <div class="m-rule"></div>
+    <p class="m-desc">${esc(p.desc)}</p>
+    <p class="m-size-label">Select Size</p>
+    <div class="m-sizes" id="sizes-${id}">${sizesHTML}</div>
+    <div class="m-actions">
+      <button class="btn btn-dark" id="wish-btn-${id}" onclick="modalWishlist(${id})">Save to Wishlist</button>
+      <button class="btn btn-outline" onclick="enquire(${id})">Enquire About This Piece</button>
+    </div>
+    <div class="m-specs">${specsHTML}</div>
+  `;
+
+  document.getElementById('modal-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+};
+
+window.closeModal = function() {
+  document.getElementById('modal-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+};
+
+window.handleOverlayClick = function(e) {
+  if (e.target === document.getElementById('modal-overlay')) window.closeModal();
+};
+
+window.pickSize = function(id, s, el) {
+  selectedSize[id] = s;
+  document.getElementById(`sizes-${id}`)?.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+};
+
+window.modalWishlist = function(id) {
+  const btn = document.getElementById(`wish-btn-${id}`);
+  btn.textContent = 'Saved to Wishlist ✓';
+  btn.style.background = 'var(--olive)';
+  setTimeout(() => { btn.textContent = 'Save to Wishlist'; btn.style.background = ''; }, 2500);
+};
+
+window.enquire = function() {
+  window.closeModal();
+  setTimeout(() => document.querySelector('.newsletter')?.scrollIntoView({ behavior: 'smooth' }), 350);
+};
+
+/* ─── WISHLIST TOGGLE ───────────────────────────────────────────── */
+window.toggleWishlist = function(btn) {
+  const svg = btn.querySelector('svg');
+  const saved = btn.dataset.saved === '1';
+  svg.style.fill = saved ? 'none' : 'var(--charcoal)';
+  btn.dataset.saved = saved ? '0' : '1';
+};
+
+/* ─── NEWSLETTER ────────────────────────────────────────────────── */
+window.handleSubscribe = function(e) {
+  e.preventDefault();
+  const form = e.target;
+  const btn = form.querySelector('button');
+  const input = form.querySelector('input');
+  btn.textContent = "You're In ✓";
+  btn.style.background = 'var(--olive)';
+  input.value = '';
+  input.placeholder = 'Welcome to the Private Edit.';
+  setTimeout(() => { btn.textContent = 'Subscribe'; btn.style.background = ''; }, 3200);
+};
+
+/* ─── MOBILE NAV ────────────────────────────────────────────────── */
+window.toggleMobileNav = function() {
+  document.getElementById('mobile-nav')?.classList.toggle('open');
+};
+window.closeMobileNav = function() {
+  document.getElementById('mobile-nav')?.classList.remove('open');
+};
+
+/* ─── ESC KEY ───────────────────────────────────────────────────── */
+document.addEventListener('keydown', e => { if (e.key === 'Escape') window.closeModal(); });
+</script>

@@ -1,0 +1,32 @@
+---
+interface Props { editorialImg: string; }
+const { editorialImg } = Astro.props;
+---
+<section class="editorial" id="editorial">
+  <div class="ed-img" aria-hidden="true">
+    <img src={editorialImg} alt="" loading="lazy" />
+    <div class="ed-img-tag">
+      <span>The Lookbook</span>
+      <strong>SS 2026 — 04 / 08</strong>
+    </div>
+  </div>
+  <div class="ed-content">
+    <p class="ed-kicker reveal">Editorial</p>
+    <h2 class="ed-headline reveal delay-100">
+      Unhurried.<br>
+      <em>Undone.</em><br>
+      Unforgettable.
+    </h2>
+    <div class="ed-rule reveal delay-200"></div>
+    <p class="ed-body reveal delay-300">
+      Spring 2026 finds Mareno returning to its origin:
+      the quiet drama of beautifully made cloth.
+      No spectacle. No noise. Only the garment,
+      the body, and the space between them.
+    </p>
+    <div class="ed-actions reveal delay-400">
+      <a href="#editorial" class="btn btn-primary" onclick="scrollSection('editorial',40);return false;">View Lookbook</a>
+      <a href="#collection" class="btn btn-secondary" onclick="scrollSection('collection');return false;">Shop the Edit</a>
+    </div>
+  </div>
+</section>

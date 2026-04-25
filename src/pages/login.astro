@@ -1,0 +1,226 @@
+---
+import { getAuthUser } from '../lib/auth';
+
+// Already logged in → redirect to admin
+const user = getAuthUser(Astro.request);
+if (user) {
+  return Astro.redirect('/admin');
+}
+---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mareno — Admin Login</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Jost:wght@200;300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --ch: #1A1A1A;
+      --iv: #F3F1EC;
+      --sand: #DCCEB8;
+      --olive: #6B705F;
+      --taupe: #A69B90;
+      --accent: #B08060;
+      --serif: 'Cormorant Garamond', Georgia, serif;
+      --sans: 'Jost', Helvetica, sans-serif;
+      --border: #D8D4CC;
+      --danger: #A93226;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      height: 100%;
+      font-family: var(--sans);
+      background: #EDEAE4;
+      color: var(--ch);
+    }
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 24px;
+    }
+
+    .login-wrap {
+      width: 100%;
+      max-width: 400px;
+    }
+
+    .login-logo {
+      font-family: var(--serif);
+      font-size: 32px;
+      letter-spacing: 0.22em;
+      text-align: center;
+      margin-bottom: 4px;
+      color: var(--ch);
+    }
+    .login-sub {
+      font-size: 8px;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      text-align: center;
+      color: var(--taupe);
+      margin-bottom: 40px;
+    }
+
+    .login-card {
+      background: #FAFAF8;
+      border: 1px solid var(--border);
+      padding: 40px 36px 36px;
+    }
+
+    .login-heading {
+      font-family: var(--serif);
+      font-size: 24px;
+      font-weight: 400;
+      letter-spacing: 0.02em;
+      margin-bottom: 28px;
+    }
+
+    .login-field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 18px;
+    }
+    .login-field label {
+      font-size: 7px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--taupe);
+      font-weight: 500;
+    }
+    .login-field input {
+      font-family: var(--sans);
+      font-size: 13px;
+      color: var(--ch);
+      background: #fff;
+      border: 1px solid var(--border);
+      padding: 11px 14px;
+      outline: none;
+      width: 100%;
+      transition: border-color .18s;
+    }
+    .login-field input:focus { border-color: var(--ch); }
+    .login-field input.error  { border-color: var(--danger); }
+
+    .login-error {
+      font-size: 10px;
+      color: var(--danger);
+      margin-bottom: 16px;
+      min-height: 14px;
+      letter-spacing: 0.04em;
+    }
+
+    .login-btn {
+      font-family: var(--sans);
+      font-size: 8px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      font-weight: 500;
+      background: var(--ch);
+      color: var(--iv);
+      border: none;
+      padding: 14px;
+      width: 100%;
+      cursor: pointer;
+      transition: opacity .2s;
+      margin-top: 8px;
+    }
+    .login-btn:hover:not(:disabled) { opacity: .78; }
+    .login-btn:disabled { opacity: .45; cursor: default; }
+
+    .login-back {
+      display: block;
+      text-align: center;
+      margin-top: 20px;
+      font-size: 9px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--taupe);
+      text-decoration: none;
+      transition: color .18s;
+    }
+    .login-back:hover { color: var(--ch); }
+  </style>
+</head>
+<body>
+  <div class="login-wrap">
+    <div class="login-logo">Mareno</div>
+    <p class="login-sub">Admin Access</p>
+
+    <div class="login-card">
+      <h1 class="login-heading">Sign In</h1>
+
+      <div class="login-field">
+        <label for="username">Username</label>
+        <input type="text" id="username" autocomplete="username" autocapitalize="none" spellcheck="false" />
+      </div>
+      <div class="login-field">
+        <label for="password">Password</label>
+        <input type="password" id="password" autocomplete="current-password" />
+      </div>
+
+      <p class="login-error" id="login-error"></p>
+
+      <button class="login-btn" id="login-btn" onclick="doLogin()">Sign In</button>
+    </div>
+
+    <a href="/" class="login-back">← Back to Store</a>
+  </div>
+
+  <script is:inline>
+    document.getElementById('password').addEventListener('keydown', e => {
+      if (e.key === 'Enter') doLogin();
+    });
+    document.getElementById('username').addEventListener('keydown', e => {
+      if (e.key === 'Enter') document.getElementById('password').focus();
+    });
+
+    async function doLogin() {
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value;
+      const errEl   = document.getElementById('login-error');
+      const btn     = document.getElementById('login-btn');
+
+      errEl.textContent = '';
+      document.getElementById('username').classList.remove('error');
+      document.getElementById('password').classList.remove('error');
+
+      if (!username || !password) {
+        errEl.textContent = 'Please enter your username and password.';
+        if (!username) document.getElementById('username').classList.add('error');
+        if (!password) document.getElementById('password').classList.add('error');
+        return;
+      }
+
+      btn.disabled = true;
+      btn.textContent = 'Signing in…';
+
+      try {
+        const res = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password }),
+        });
+        const data = await res.json();
+
+        if (res.ok) {
+          window.location.href = '/admin';
+        } else {
+          errEl.textContent = data.error ?? 'Login failed.';
+          document.getElementById('password').classList.add('error');
+          btn.disabled = false;
+          btn.textContent = 'Sign In';
+        }
+      } catch {
+        errEl.textContent = 'Network error. Please try again.';
+        btn.disabled = false;
+        btn.textContent = 'Sign In';
+      }
+    }
+  </script>
+</body>
+</html>

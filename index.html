@@ -1,0 +1,1414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mareno — Contemporary Clothing</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Jost:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ─── TOKENS ─────────────────────────────────────────────────── */
+:root {
+  --charcoal: #1A1A1A;
+  --ivory:    #F3F1EC;
+  --sand:     #DCCEB8;
+  --olive:    #6B705F;
+  --taupe:    #A69B90;
+  --accent:   #B08060;
+  --rule:     rgba(26,26,26,0.12);
+  --serif: 'Cormorant Garamond', Georgia, serif;
+  --sans:  'Jost', Helvetica, sans-serif;
+  --ann-h: 37px;
+  --nav-h: 68px;
+}
+
+/* ─── RESET ──────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--sans);
+  background: var(--ivory);
+  color: var(--charcoal);
+  overflow-x: hidden;
+}
+a { text-decoration: none; color: inherit; }
+button { font-family: inherit; }
+
+/* ─── ANNOUNCEMENT BANNER ─────────────────────────────────────── */
+.announcement {
+  background: var(--charcoal);
+  color: var(--ivory);
+  height: var(--ann-h);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 28px;
+  position: sticky;
+  top: 0;
+  z-index: 200;
+  overflow: hidden;
+}
+.ann-text {
+  font-family: var(--sans);
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.ann-dot {
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: var(--taupe);
+  flex-shrink: 0;
+}
+
+/* ─── NAVIGATION ─────────────────────────────────────────────── */
+.nav {
+  background: var(--ivory);
+  height: var(--nav-h);
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  padding: 0 48px;
+  border-bottom: 1px solid var(--rule);
+  position: sticky;
+  top: var(--ann-h);
+  z-index: 199;
+  transition: box-shadow 0.3s;
+}
+.nav.scrolled { box-shadow: 0 1px 16px rgba(26,26,26,0.07); }
+.nav-left {
+  display: flex;
+  gap: 36px;
+  list-style: none;
+}
+.nav-left a {
+  font-family: var(--sans);
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--charcoal);
+  opacity: 0.65;
+  transition: opacity 0.2s;
+  padding-bottom: 2px;
+}
+.nav-left a:hover,
+.nav-left a.active { opacity: 1; border-bottom: 1px solid var(--charcoal); }
+.nav-logo {
+  font-family: var(--serif);
+  font-size: 24px;
+  font-weight: 300;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  text-align: center;
+  color: var(--charcoal);
+}
+.nav-right {
+  display: flex;
+  gap: 24px;
+  align-items: center;
+  justify-content: flex-end;
+}
+.nav-icon {
+  font-family: var(--sans);
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  opacity: 0.6;
+  transition: opacity 0.2s;
+  cursor: pointer;
+}
+.nav-icon:hover { opacity: 1; }
+.nav-hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+}
+.nav-hamburger span {
+  display: block;
+  width: 22px;
+  height: 1px;
+  background: var(--charcoal);
+}
+
+/* Mobile nav drawer */
+.mobile-nav {
+  display: none;
+  position: fixed;
+  top: calc(var(--ann-h) + var(--nav-h));
+  left: 0; right: 0;
+  background: var(--ivory);
+  border-bottom: 1px solid var(--rule);
+  padding: 28px 32px 32px;
+  z-index: 198;
+  flex-direction: column;
+  gap: 20px;
+}
+.mobile-nav.open { display: flex; }
+.mobile-nav a {
+  font-family: var(--sans);
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--charcoal);
+  opacity: 0.75;
+}
+
+/* ─── BUTTONS ─────────────────────────────────────────────────── */
+.btn {
+  font-family: var(--sans);
+  font-size: 9px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.22s ease;
+}
+.btn-primary   { background: var(--ivory); color: var(--charcoal); padding: 14px 36px; }
+.btn-primary:hover { background: var(--sand); }
+.btn-secondary { background: transparent; color: var(--ivory); padding: 13px 35px; border: 1px solid rgba(243,241,236,0.35); }
+.btn-secondary:hover { border-color: var(--ivory); }
+.btn-dark      { background: var(--charcoal); color: var(--ivory); padding: 14px 36px; }
+.btn-dark:hover { background: #2e2e2e; }
+.btn-olive     { background: var(--olive); color: var(--ivory); padding: 14px 36px; }
+.btn-outline   { background: transparent; color: var(--charcoal); padding: 13px 35px; border: 1px solid var(--charcoal); }
+.btn-outline:hover { background: var(--charcoal); color: var(--ivory); }
+.btn-ghost     { background: transparent; color: var(--charcoal); padding: 10px 0; border-bottom: 1px solid var(--charcoal); }
+
+/* ─── SECTION LABEL ──────────────────────────────────────────── */
+.section-label {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 40px;
+}
+.sec-num {
+  font-family: var(--sans);
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  color: var(--taupe);
+  font-weight: 500;
+}
+.sec-title {
+  font-family: var(--sans);
+  font-size: 9px;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+.sec-rule { flex: 1; height: 1px; background: var(--rule); }
+
+/* ─── HERO ────────────────────────────────────────────────────── */
+.hero {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: calc(100vh - var(--ann-h) - var(--nav-h));
+  background: var(--charcoal);
+  overflow: hidden;
+}
+.hero-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 80px 72px 88px;
+  position: relative;
+}
+.hero-kicker {
+  font-family: var(--sans);
+  font-size: 9px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--taupe);
+  margin-bottom: 24px;
+}
+.hero-headline {
+  font-family: var(--serif);
+  font-size: clamp(52px, 5.2vw, 84px);
+  font-weight: 300;
+  line-height: 1.05;
+  letter-spacing: 0.02em;
+  color: var(--ivory);
+  margin-bottom: 28px;
+}
+.hero-headline em { font-style: italic; color: var(--sand); }
+.hero-rule { width: 40px; height: 1px; background: var(--accent); margin-bottom: 24px; }
+.hero-sub {
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 300;
+  line-height: 1.75;
+  color: rgba(243,241,236,0.55);
+  max-width: 320px;
+  margin-bottom: 44px;
+  letter-spacing: 0.04em;
+}
+.hero-actions { display: flex; gap: 14px; align-items: center; }
+.hero-scroll {
+  position: absolute;
+  bottom: 40px;
+  left: 72px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family: var(--sans);
+  font-size: 8px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: rgba(243,241,236,0.3);
+}
+.hero-scroll-line { width: 32px; height: 1px; background: rgba(243,241,236,0.25); }
+
+/* Hero visual panel */
+.hero-visual {
+  position: relative;
+  overflow: hidden;
+  background: var(--sand);
+}
+.hero-visual img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  display: block;
+}
+.hero-counter {
+  position: absolute;
+  bottom: 36px;
+  right: 36px;
+  font-family: var(--sans);
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  color: rgba(243,241,236,0.5);
+  z-index: 3;
+}
+
+/* ─── CATEGORY NAV ───────────────────────────────────────────── */
+.cat-nav {
+  padding: 0 60px;
+  border-bottom: 1px solid var(--rule);
+  display: flex;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  background: var(--ivory);
+}
+.cat-nav::-webkit-scrollbar { display: none; }
+.cat-btn {
+  font-family: var(--sans);
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-weight: 400;
+  padding: 20px 28px;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  color: var(--charcoal);
+  opacity: 0.5;
+  transition: all 0.2s;
+  white-space: nowrap;
+  margin-bottom: -1px;
+}
+.cat-btn:hover { opacity: 0.85; }
+.cat-btn.active { opacity: 1; border-bottom-color: var(--charcoal); }
+
+/* ─── COLLECTION GRID ────────────────────────────────────────── */
+.collection {
+  padding: 64px 60px 88px;
+  background: var(--ivory);
+}
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px;
+}
+
+/* ─── PRODUCT CARD ───────────────────────────────────────────── */
+.product-card {
+  background: var(--ivory);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.product-card[data-hidden="true"] { display: none; }
+.prod-img-wrap {
+  aspect-ratio: 3/4;
+  overflow: hidden;
+  position: relative;
+  background: var(--sand);
+}
+.prod-img-wrap img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  display: block;
+  transition: transform 0.65s cubic-bezier(0.25,0.46,0.45,0.94);
+}
+.product-card:hover .prod-img-wrap img { transform: scale(1.04); }
+.prod-badge {
+  position: absolute;
+  top: 14px; left: 14px;
+  background: var(--ivory);
+  font-family: var(--sans);
+  font-size: 7px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  padding: 5px 10px;
+  font-weight: 500;
+  z-index: 2;
+}
+.prod-wishlist {
+  position: absolute;
+  top: 14px; right: 14px;
+  width: 34px; height: 34px;
+  background: var(--ivory);
+  border: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  z-index: 2;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.product-card:hover .prod-wishlist { opacity: 1; }
+.prod-quick {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  background: rgba(26,26,26,0.88);
+  color: var(--ivory);
+  font-family: var(--sans);
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  padding: 15px;
+  text-align: center;
+  transform: translateY(100%);
+  transition: transform 0.25s ease;
+  border: none; cursor: pointer;
+  z-index: 2;
+}
+.product-card:hover .prod-quick { transform: translateY(0); }
+.prod-info {
+  padding: 18px 20px 24px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+.prod-cat {
+  font-family: var(--sans);
+  font-size: 8px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--taupe);
+  margin-bottom: 7px;
+}
+.prod-name {
+  font-family: var(--serif);
+  font-size: 20px;
+  font-weight: 400;
+  letter-spacing: 0.03em;
+  line-height: 1.2;
+  margin-bottom: 9px;
+}
+.prod-price-row { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+.prod-price { font-family: var(--sans); font-size: 12px; letter-spacing: 0.08em; }
+.prod-price-old { font-family: var(--sans); font-size: 11px; color: var(--taupe); text-decoration: line-through; font-weight: 300; }
+.prod-colors { display: flex; gap: 7px; }
+.color-dot {
+  width: 13px; height: 13px;
+  border-radius: 50%;
+  border: 1px solid rgba(26,26,26,0.14);
+  cursor: pointer;
+  transition: box-shadow 0.15s;
+}
+.color-dot.active { box-shadow: 0 0 0 2px var(--ivory), 0 0 0 3.5px rgba(26,26,26,0.45); }
+
+/* ─── EDITORIAL BREAK ────────────────────────────────────────── */
+.editorial {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 540px;
+}
+.ed-img {
+  position: relative;
+  overflow: hidden;
+  min-height: 540px;
+  background: var(--olive);
+}
+.ed-img img {
+  position: absolute;
+  inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  display: block;
+}
+.ed-img-tag {
+  position: absolute;
+  bottom: 36px; left: 36px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.ed-img-tag span {
+  font-family: var(--sans);
+  font-size: 8px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(243,241,236,0.45);
+}
+.ed-img-tag strong {
+  font-family: var(--sans);
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(243,241,236,0.75);
+  font-weight: 400;
+}
+.ed-content {
+  background: var(--charcoal);
+  color: var(--ivory);
+  padding: 88px 72px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.ed-kicker {
+  font-family: var(--sans);
+  font-size: 8px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--taupe);
+  margin-bottom: 20px;
+  font-weight: 500;
+}
+.ed-headline {
+  font-family: var(--serif);
+  font-size: clamp(38px, 3.8vw, 58px);
+  font-weight: 300;
+  line-height: 1.1;
+  letter-spacing: 0.02em;
+  margin-bottom: 16px;
+}
+.ed-headline em { font-style: italic; color: var(--sand); }
+.ed-rule { width: 40px; height: 1px; background: var(--accent); margin-bottom: 24px; }
+.ed-body {
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 300;
+  line-height: 1.85;
+  color: rgba(243,241,236,0.6);
+  max-width: 340px;
+  margin-bottom: 44px;
+  letter-spacing: 0.03em;
+}
+.ed-actions { display: flex; gap: 14px; flex-wrap: wrap; }
+
+/* ─── BRAND VALUES ───────────────────────────────────────────── */
+.values {
+  padding: 88px 60px;
+  background: var(--ivory);
+}
+.values-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2px;
+  margin-top: 0;
+}
+.value-card {
+  background: var(--charcoal);
+  padding: 44px 32px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.value-card:nth-child(2) { background: #202020; }
+.value-card:nth-child(3) { background: #1E1E1E; }
+.value-card:nth-child(4) { background: #242424; }
+.val-icon {
+  width: 34px; height: 34px;
+  border: 1px solid rgba(243,241,236,0.18);
+  display: flex; align-items: center; justify-content: center;
+}
+.val-title {
+  font-family: var(--serif);
+  font-size: 22px;
+  font-weight: 400;
+  color: var(--ivory);
+  letter-spacing: 0.02em;
+  line-height: 1.2;
+}
+.val-desc {
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 300;
+  line-height: 1.75;
+  color: rgba(243,241,236,0.45);
+  letter-spacing: 0.03em;
+}
+
+/* ─── NEWSLETTER ─────────────────────────────────────────────── */
+.newsletter {
+  background: var(--sand);
+  padding: 100px 60px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.nl-kicker {
+  font-family: var(--sans);
+  font-size: 8px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: rgba(26,26,26,0.45);
+  margin-bottom: 18px;
+}
+.nl-headline {
+  font-family: var(--serif);
+  font-size: clamp(36px, 4vw, 58px);
+  font-weight: 300;
+  letter-spacing: 0.04em;
+  text-align: center;
+  margin-bottom: 14px;
+  line-height: 1.1;
+}
+.nl-sub {
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 300;
+  color: rgba(26,26,26,0.55);
+  letter-spacing: 0.04em;
+  text-align: center;
+  margin-bottom: 48px;
+}
+.nl-form {
+  display: flex;
+  gap: 0;
+  width: 100%;
+  max-width: 500px;
+  align-items: flex-end;
+}
+.nl-input {
+  flex: 1;
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 300;
+  color: var(--charcoal);
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid rgba(26,26,26,0.35);
+  padding: 13px 16px 13px 0;
+  outline: none;
+  letter-spacing: 0.04em;
+  transition: border-color 0.2s;
+}
+.nl-input::placeholder { color: var(--taupe); }
+.nl-input:focus { border-bottom-color: var(--charcoal); }
+.nl-submit {
+  margin-left: 16px;
+  flex-shrink: 0;
+}
+
+/* ─── FOOTER ─────────────────────────────────────────────────── */
+footer {
+  background: var(--charcoal);
+  color: var(--ivory);
+  padding: 72px 60px 44px;
+}
+.footer-top {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 52px;
+  margin-bottom: 60px;
+  padding-bottom: 60px;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+}
+.footer-logo {
+  font-family: var(--serif);
+  font-size: 34px;
+  font-weight: 300;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  margin-bottom: 22px;
+}
+.footer-desc {
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 300;
+  line-height: 1.85;
+  color: rgba(243,241,236,0.4);
+  letter-spacing: 0.03em;
+  max-width: 260px;
+  margin-bottom: 28px;
+}
+.footer-social { display: flex; gap: 18px; }
+.footer-social a {
+  font-family: var(--sans);
+  font-size: 8px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(243,241,236,0.4);
+  transition: color 0.2s;
+}
+.footer-social a:hover { color: var(--ivory); }
+.footer-col-title {
+  font-family: var(--sans);
+  font-size: 9px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  font-weight: 500;
+  margin-bottom: 22px;
+}
+.footer-links {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 13px;
+}
+.footer-links a {
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 300;
+  color: rgba(243,241,236,0.4);
+  letter-spacing: 0.06em;
+  transition: color 0.2s;
+}
+.footer-links a:hover { color: var(--ivory); }
+.footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.footer-copy {
+  font-family: var(--sans);
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  color: rgba(243,241,236,0.25);
+}
+.footer-legal { display: flex; gap: 24px; }
+.footer-legal a {
+  font-family: var(--sans);
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  color: rgba(243,241,236,0.25);
+  transition: color 0.2s;
+}
+.footer-legal a:hover { color: rgba(243,241,236,0.55); }
+
+/* ─── MODAL ──────────────────────────────────────────────────── */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(26,26,26,0.55);
+  z-index: 500;
+  display: flex;
+  align-items: stretch;
+  justify-content: flex-end;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s;
+  backdrop-filter: blur(2px);
+}
+.modal-overlay.open { opacity: 1; pointer-events: all; }
+.modal {
+  background: var(--ivory);
+  width: 100%;
+  max-width: 900px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  transform: translateX(48px);
+  transition: transform 0.35s cubic-bezier(0.25,0.46,0.45,0.94);
+  overflow-y: auto;
+}
+.modal-overlay.open .modal { transform: translateX(0); }
+.modal-img-panel {
+  position: relative;
+  min-height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.modal-img-panel img {
+  position: absolute;
+  inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  display: block;
+  z-index: 1;
+}
+.modal-close {
+  position: absolute;
+  top: 18px; right: 18px;
+  width: 38px; height: 38px;
+  background: var(--ivory);
+  border: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px;
+  line-height: 1;
+  z-index: 10;
+  color: var(--charcoal);
+  transition: background 0.2s;
+}
+.modal-close:hover { background: var(--sand); }
+.modal-body {
+  padding: 52px 48px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+.m-kicker { font-family: var(--sans); font-size: 8px; letter-spacing: 0.24em; text-transform: uppercase; color: var(--taupe); margin-bottom: 12px; }
+.m-title { font-family: var(--serif); font-size: 36px; font-weight: 300; letter-spacing: 0.03em; line-height: 1.1; margin-bottom: 10px; }
+.m-price { font-family: var(--sans); font-size: 15px; letter-spacing: 0.06em; margin-bottom: 28px; display: flex; align-items: center; gap: 10px; }
+.m-price-old { font-size: 12px; color: var(--taupe); text-decoration: line-through; font-weight: 300; }
+.m-rule { width: 40px; height: 1px; background: var(--accent); margin-bottom: 22px; }
+.m-desc { font-family: var(--sans); font-size: 12px; font-weight: 300; line-height: 1.85; color: rgba(26,26,26,0.6); letter-spacing: 0.03em; margin-bottom: 32px; }
+.m-size-label { font-family: var(--sans); font-size: 8px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--taupe); margin-bottom: 12px; font-weight: 500; }
+.m-sizes { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 32px; }
+.size-btn {
+  font-family: var(--sans); font-size: 10px; letter-spacing: 0.08em;
+  width: 44px; height: 44px;
+  border: 1px solid var(--rule);
+  background: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--charcoal); transition: all 0.18s;
+}
+.size-btn:hover:not(.unavail) { border-color: var(--charcoal); }
+.size-btn.active { background: var(--charcoal); color: var(--ivory); border-color: var(--charcoal); }
+.size-btn.unavail { color: var(--taupe); cursor: default; opacity: 0.45; }
+.m-actions { display: flex; flex-direction: column; gap: 11px; margin-bottom: 36px; }
+.m-actions .btn { width: 100%; padding: 15px; justify-content: center; }
+.m-specs { border-top: 1px solid var(--rule); padding-top: 28px; }
+.spec-row { display: flex; border-bottom: 1px solid var(--rule); }
+.spec-k { font-family: var(--sans); font-size: 8px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--taupe); padding: 13px 0; width: 120px; flex-shrink: 0; font-weight: 500; display: flex; align-items: center; }
+.spec-v { font-family: var(--sans); font-size: 11px; color: var(--charcoal); padding: 13px 0 13px 16px; font-weight: 300; letter-spacing: 0.03em; display: flex; align-items: center; flex: 1; }
+.modal-img-cat {
+  position: absolute; bottom: 28px; left: 28px;
+  font-family: var(--sans); font-size: 8px; letter-spacing: 0.18em;
+  text-transform: uppercase; color: rgba(26,26,26,0.3); z-index: 3;
+}
+
+/* ─── SCROLLBAR ──────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--taupe); border-radius: 2px; }
+
+/* ─── RESPONSIVE ─────────────────────────────────────────────── */
+@media (max-width: 1100px) {
+  .hero-content { padding: 72px 52px 80px; }
+  .hero-scroll { left: 52px; }
+  .ed-content { padding: 72px 52px; }
+  .values-grid { grid-template-columns: 1fr 1fr; }
+  .footer-top { grid-template-columns: 1fr 1fr; gap: 40px; }
+}
+@media (max-width: 900px) {
+  .hero { grid-template-columns: 1fr; }
+  .hero-visual { display: none; }
+  .hero-content { min-height: calc(100vh - var(--ann-h) - var(--nav-h)); padding: 80px 40px 88px; }
+  .products-grid { grid-template-columns: 1fr 1fr; }
+  .nav { padding: 0 28px; }
+  .nav-left { display: none; }
+  .nav-hamburger { display: flex; }
+  .collection { padding: 52px 28px 72px; }
+  .cat-nav { padding: 0 28px; }
+  .editorial { grid-template-columns: 1fr; }
+  .ed-img { min-height: 360px; }
+  .ed-content { padding: 64px 40px; }
+  .values { padding: 72px 28px; }
+  .newsletter { padding: 80px 28px; }
+  footer { padding: 56px 28px 36px; }
+  .footer-top { grid-template-columns: 1fr 1fr; }
+  .modal { max-width: 100%; grid-template-columns: 1fr; }
+  .modal-img-panel { min-height: 50vh; max-height: 50vh; }
+  .modal-body { padding: 40px 32px; }
+}
+@media (max-width: 600px) {
+  .announcement { gap: 14px; padding: 0 20px; }
+  .ann-dot { display: none; }
+  .ann-text + .ann-dot + .ann-text,
+  .ann-dot + .ann-text + .ann-dot,
+  .ann-text + .ann-dot + .ann-text + .ann-dot + .ann-text { display: none; }
+  .hero-content { padding: 60px 24px 72px; }
+  .hero-headline { font-size: 44px; }
+  .hero-scroll { left: 24px; }
+  .products-grid { grid-template-columns: 1fr; }
+  .values-grid { grid-template-columns: 1fr; }
+  .footer-top { grid-template-columns: 1fr; gap: 36px; }
+  .footer-bottom { flex-direction: column; gap: 14px; text-align: center; }
+  .nl-form { flex-direction: column; gap: 16px; }
+  .nl-submit { margin-left: 0; width: 100%; }
+}
+</style>
+</head>
+<body>
+
+<!-- ─── ANNOUNCEMENT ──────────────────────────────────────────── -->
+<div class="announcement" role="banner">
+  <span class="ann-text">New Collection — Spring Summer 2026</span>
+  <span class="ann-dot"></span>
+  <span class="ann-text">Free Delivery on Orders Over £200</span>
+  <span class="ann-dot"></span>
+  <span class="ann-text">Now in Stores · London · Paris · Milan</span>
+</div>
+
+<!-- ─── NAVIGATION ────────────────────────────────────────────── -->
+<nav class="nav" id="main-nav" role="navigation" aria-label="Main navigation">
+  <ul class="nav-left">
+    <li><a href="#collection" class="active" onclick="scrollTo('collection');return false;">Collections</a></li>
+    <li><a href="#collection" onclick="scrollToNewIn();return false;">New In</a></li>
+    <li><a href="#editorial" onclick="scrollTo('editorial', 40);return false;">Lookbook</a></li>
+    <li><a href="#about" onclick="scrollTo('about');return false;">About</a></li>
+  </ul>
+  <a href="#" class="nav-logo">Mareno</a>
+  <div class="nav-right">
+    <span class="nav-icon">Search</span>
+    <span class="nav-icon">Wishlist</span>
+    <span class="nav-icon">Account</span>
+    <button class="nav-hamburger" onclick="toggleMobileNav()" aria-label="Open menu">
+      <span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- Mobile nav -->
+<div class="mobile-nav" id="mobile-nav">
+  <a href="#collection" onclick="closeMobileNav();scrollTo('collection');return false;">Collections</a>
+  <a href="#collection" onclick="closeMobileNav();scrollToNewIn();return false;">New In</a>
+  <a href="#editorial" onclick="closeMobileNav();scrollTo('editorial', 40);return false;">Lookbook</a>
+  <a href="#about" onclick="closeMobileNav();scrollTo('about');return false;">About</a>
+</div>
+
+<!-- ─── HERO ──────────────────────────────────────────────────── -->
+<section class="hero" aria-label="Hero">
+  <div class="hero-content">
+    <p class="hero-kicker">Spring / Summer 2026</p>
+    <h1 class="hero-headline">
+      Dressed for<br>the <em>Long View</em>
+    </h1>
+    <div class="hero-rule"></div>
+    <p class="hero-sub">
+      Considered garments for the unhurried life.<br>
+      Each piece crafted to transcend the season.
+    </p>
+    <div class="hero-actions">
+      <a href="#collection" class="btn btn-primary" onclick="scrollTo('collection');return false;">Explore Collection</a>
+      <a href="#editorial" class="btn btn-secondary" onclick="scrollTo('editorial', 40);return false;">View Lookbook</a>
+    </div>
+    <div class="hero-scroll">
+      <span class="hero-scroll-line"></span>
+      <span>Scroll</span>
+    </div>
+  </div>
+  <div class="hero-visual" aria-hidden="true">
+    <img src="img/IMG_6793.jpeg" alt="">
+    <div class="hero-counter">SS 2026 — 01 / 08</div>
+  </div>
+</section>
+
+<!-- ─── CATEGORY NAV ──────────────────────────────────────────── -->
+<nav class="cat-nav" id="collection" aria-label="Product categories">
+  <button class="cat-btn active" onclick="filterCat('all',this)">All</button>
+  <button class="cat-btn" onclick="filterCat('new',this)">New Arrivals</button>
+  <button class="cat-btn" onclick="filterCat('shirts',this)">Shirts</button>
+  <button class="cat-btn" onclick="filterCat('shortsleeve',this)">Short-Sleeve</button>
+  <button class="cat-btn" onclick="filterCat('trousers',this)">Trousers</button>
+  <button class="cat-btn" onclick="filterCat('shorts',this)">Shorts</button>
+</nav>
+
+<!-- ─── COLLECTION ────────────────────────────────────────────── -->
+<section class="collection" aria-label="Product collection">
+  <div class="section-label">
+    <span class="sec-num">01</span>
+    <span class="sec-title">The Collection</span>
+    <div class="sec-rule"></div>
+  </div>
+
+  <div class="products-grid" id="products-grid">
+
+    <!-- Card 0 · Striped Linen Shirt -->
+    <article class="product-card" data-cats="shirts new" onclick="openModal(0)">
+      <div class="prod-img-wrap">
+        <img src="img/IMG_6797.jpeg" alt="Striped Linen Shirt">
+        <span class="prod-badge">New In</span>
+        <button class="prod-wishlist" onclick="event.stopPropagation();toggleWishlist(this)" aria-label="Save to wishlist">
+          <svg width="17" height="15" viewBox="0 0 17 15" fill="none" stroke="#1A1A1A" stroke-width="1.2"><path d="M8.5 13.5S1 9 1 4.5a4 4 0 0 1 7.5-2A4 4 0 0 1 16 4.5c0 4.5-7.5 9-7.5 9z"/></svg>
+        </button>
+        <button class="prod-quick" onclick="event.stopPropagation();openModal(0)">Quick View</button>
+      </div>
+      <div class="prod-info">
+        <p class="prod-cat">Shirts</p>
+        <h3 class="prod-name">Striped Linen Shirt</h3>
+        <div class="prod-price-row"><span class="prod-price">£185</span></div>
+        <div class="prod-colors">
+          <span class="color-dot active" style="background:#B8D4E8;" title="Sky"></span>
+          <span class="color-dot" style="background:#6B705F;" title="Sage"></span>
+        </div>
+      </div>
+    </article>
+
+    <!-- Card 1 · White Linen Shirt -->
+    <article class="product-card" data-cats="shirts" onclick="openModal(1)">
+      <div class="prod-img-wrap">
+        <img src="img/IMG_6794.jpeg" alt="White Linen Shirt">
+        <button class="prod-wishlist" onclick="event.stopPropagation();toggleWishlist(this)" aria-label="Save to wishlist">
+          <svg width="17" height="15" viewBox="0 0 17 15" fill="none" stroke="#1A1A1A" stroke-width="1.2"><path d="M8.5 13.5S1 9 1 4.5a4 4 0 0 1 7.5-2A4 4 0 0 1 16 4.5c0 4.5-7.5 9-7.5 9z"/></svg>
+        </button>
+        <button class="prod-quick" onclick="event.stopPropagation();openModal(1)">Quick View</button>
+      </div>
+      <div class="prod-info">
+        <p class="prod-cat">Shirts</p>
+        <h3 class="prod-name">White Linen Shirt</h3>
+        <div class="prod-price-row"><span class="prod-price">£175</span></div>
+        <div class="prod-colors">
+          <span class="color-dot active" style="background:#F3F1EC;" title="White"></span>
+          <span class="color-dot" style="background:#E8E2D8;" title="Ecru"></span>
+          <span class="color-dot" style="background:#1A1A1A;" title="Noir"></span>
+        </div>
+      </div>
+    </article>
+
+    <!-- Card 2 · Maritime Linen Shirt -->
+    <article class="product-card" data-cats="shirts" onclick="openModal(2)">
+      <div class="prod-img-wrap">
+        <img src="img/IMG_6795.jpeg" alt="Maritime Linen Shirt">
+        <button class="prod-wishlist" onclick="event.stopPropagation();toggleWishlist(this)" aria-label="Save to wishlist">
+          <svg width="17" height="15" viewBox="0 0 17 15" fill="none" stroke="#1A1A1A" stroke-width="1.2"><path d="M8.5 13.5S1 9 1 4.5a4 4 0 0 1 7.5-2A4 4 0 0 1 16 4.5c0 4.5-7.5 9-7.5 9z"/></svg>
+        </button>
+        <button class="prod-quick" onclick="event.stopPropagation();openModal(2)">Quick View</button>
+      </div>
+      <div class="prod-info">
+        <p class="prod-cat">Shirts</p>
+        <h3 class="prod-name">Maritime Linen Shirt</h3>
+        <div class="prod-price-row"><span class="prod-price">£175</span></div>
+        <div class="prod-colors">
+          <span class="color-dot active" style="background:#2E4A72;" title="Navy"></span>
+          <span class="color-dot" style="background:#6B705F;" title="Olive"></span>
+          <span class="color-dot" style="background:#DCCEB8;" title="Sand"></span>
+        </div>
+      </div>
+    </article>
+
+    <!-- Card 3 · Sky Linen Shirt -->
+    <article class="product-card" data-cats="shirts new" onclick="openModal(3)">
+      <div class="prod-img-wrap">
+        <img src="img/IMG_6796.jpeg" alt="Sky Linen Shirt">
+        <span class="prod-badge">New In</span>
+        <button class="prod-wishlist" onclick="event.stopPropagation();toggleWishlist(this)" aria-label="Save to wishlist">
+          <svg width="17" height="15" viewBox="0 0 17 15" fill="none" stroke="#1A1A1A" stroke-width="1.2"><path d="M8.5 13.5S1 9 1 4.5a4 4 0 0 1 7.5-2A4 4 0 0 1 16 4.5c0 4.5-7.5 9-7.5 9z"/></svg>
+        </button>
+        <button class="prod-quick" onclick="event.stopPropagation();openModal(3)">Quick View</button>
+      </div>
+      <div class="prod-info">
+        <p class="prod-cat">Shirts</p>
+        <h3 class="prod-name">Sky Linen Shirt</h3>
+        <div class="prod-price-row"><span class="prod-price">£195</span></div>
+        <div class="prod-colors">
+          <span class="color-dot active" style="background:#B8D4E8;" title="Sky"></span>
+          <span class="color-dot" style="background:#F3F1EC;" title="White"></span>
+          <span class="color-dot" style="background:#DCCEB8;" title="Sand"></span>
+        </div>
+      </div>
+    </article>
+
+    <!-- Card 4 · Sand Short-Sleeve -->
+    <article class="product-card" data-cats="shortsleeve" onclick="openModal(4)">
+      <div class="prod-img-wrap">
+        <img src="img/IMG_6800.jpeg" alt="Sand Short-Sleeve Shirt">
+        <button class="prod-wishlist" onclick="event.stopPropagation();toggleWishlist(this)" aria-label="Save to wishlist">
+          <svg width="17" height="15" viewBox="0 0 17 15" fill="none" stroke="#1A1A1A" stroke-width="1.2"><path d="M8.5 13.5S1 9 1 4.5a4 4 0 0 1 7.5-2A4 4 0 0 1 16 4.5c0 4.5-7.5 9-7.5 9z"/></svg>
+        </button>
+        <button class="prod-quick" onclick="event.stopPropagation();openModal(4)">Quick View</button>
+      </div>
+      <div class="prod-info">
+        <p class="prod-cat">Short-Sleeve</p>
+        <h3 class="prod-name">Sand Short-Sleeve</h3>
+        <div class="prod-price-row">
+          <span class="prod-price">£155</span>
+          <span class="prod-price-old">£195</span>
+        </div>
+        <div class="prod-colors">
+          <span class="color-dot active" style="background:#C8B898;" title="Sand"></span>
+          <span class="color-dot" style="background:#E8E2D8;" title="Ecru"></span>
+        </div>
+      </div>
+    </article>
+
+    <!-- Card 5 · Sage Stripe Shirt -->
+    <article class="product-card" data-cats="shirts new" onclick="openModal(5)">
+      <div class="prod-img-wrap">
+        <img src="img/IMG_6801.jpeg" alt="Sage Stripe Shirt">
+        <span class="prod-badge">New In</span>
+        <button class="prod-wishlist" onclick="event.stopPropagation();toggleWishlist(this)" aria-label="Save to wishlist">
+          <svg width="17" height="15" viewBox="0 0 17 15" fill="none" stroke="#1A1A1A" stroke-width="1.2"><path d="M8.5 13.5S1 9 1 4.5a4 4 0 0 1 7.5-2A4 4 0 0 1 16 4.5c0 4.5-7.5 9-7.5 9z"/></svg>
+        </button>
+        <button class="prod-quick" onclick="event.stopPropagation();openModal(5)">Quick View</button>
+      </div>
+      <div class="prod-info">
+        <p class="prod-cat">Shirts</p>
+        <h3 class="prod-name">Sage Stripe Shirt</h3>
+        <div class="prod-price-row"><span class="prod-price">£195</span></div>
+        <div class="prod-colors">
+          <span class="color-dot active" style="background:#8FA898;" title="Sage"></span>
+          <span class="color-dot" style="background:#F3F1EC;" title="White"></span>
+        </div>
+      </div>
+    </article>
+
+  </div>
+</section>
+
+<!-- ─── EDITORIAL BREAK ───────────────────────────────────────── -->
+<section class="editorial" id="editorial">
+  <div class="ed-img" aria-hidden="true">
+    <img src="img/IMG_6802.jpeg" alt="">
+    <div class="ed-img-tag">
+      <span>The Lookbook</span>
+      <strong>SS 2026 — 04 / 08</strong>
+    </div>
+  </div>
+  <div class="ed-content">
+    <p class="ed-kicker">Editorial</p>
+    <h2 class="ed-headline">
+      Unhurried.<br>
+      <em>Undone.</em><br>
+      Unforgettable.
+    </h2>
+    <div class="ed-rule"></div>
+    <p class="ed-body">
+      Spring 2026 finds Mareno returning to its origin:
+      the quiet drama of beautifully made cloth.
+      No spectacle. No noise. Only the garment,
+      the body, and the space between them.
+    </p>
+    <div class="ed-actions">
+      <a href="#editorial" class="btn btn-primary" onclick="scrollTo('editorial', 40);return false;">View Lookbook</a>
+      <a href="#collection" class="btn btn-secondary" onclick="scrollTo('collection');return false;">Shop the Edit</a>
+    </div>
+  </div>
+</section>
+
+<!-- ─── BRAND VALUES ──────────────────────────────────────────── -->
+<section class="values" id="about">
+  <div class="section-label">
+    <span class="sec-num">02</span>
+    <span class="sec-title">Our Principles</span>
+    <div class="sec-rule"></div>
+  </div>
+  <div class="values-grid">
+    <div class="value-card">
+      <div class="val-icon">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="rgba(243,241,236,0.45)" stroke-width="1">
+          <circle cx="8" cy="8" r="6.5"/>
+          <path d="M8 4.5v3.5l2.5 2.5"/>
+        </svg>
+      </div>
+      <p class="val-title">Considered Design</p>
+      <p class="val-desc">Every silhouette begins with restraint. We remove until only the essential remains.</p>
+    </div>
+    <div class="value-card">
+      <div class="val-icon">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="rgba(243,241,236,0.45)" stroke-width="1">
+          <path d="M8 1.5 L14 5 L14 11 L8 14.5 L2 11 L2 5 Z"/>
+        </svg>
+      </div>
+      <p class="val-title">Natural Materials</p>
+      <p class="val-desc">Linen, wool, silk. Fabrics grown and harvested with integrity, not industry.</p>
+    </div>
+    <div class="value-card">
+      <div class="val-icon">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="rgba(243,241,236,0.45)" stroke-width="1">
+          <rect x="2" y="2" width="12" height="12"/>
+          <path d="M5 6h6M5 9h6M5 12h3"/>
+        </svg>
+      </div>
+      <p class="val-title">Slow Fashion</p>
+      <p class="val-desc">Small runs. No overstock. Made to be worn for decades, not discarded each season.</p>
+    </div>
+    <div class="value-card">
+      <div class="val-icon">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="rgba(243,241,236,0.45)" stroke-width="1">
+          <path d="M8 1.5 Q13.5 4.5 13.5 8.5 Q13.5 12.5 8 14.5 Q2.5 12.5 2.5 8.5 Q2.5 4.5 8 1.5Z"/>
+        </svg>
+      </div>
+      <p class="val-title">Ethical Origin</p>
+      <p class="val-desc">Every workshop. Every weaver. Every hand that touches our garments — known and respected.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ─── NEWSLETTER ─────────────────────────────────────────────── -->
+<section class="newsletter">
+  <p class="nl-kicker">Join the Maison</p>
+  <h2 class="nl-headline">The Private Edit</h2>
+  <p class="nl-sub">New arrivals, lookbook releases, and rare access — before anyone else.</p>
+  <form class="nl-form" onsubmit="handleSubscribe(event)">
+    <input type="email" class="nl-input" placeholder="Your email address" required aria-label="Email address">
+    <button type="submit" class="btn btn-dark nl-submit">Subscribe</button>
+  </form>
+</section>
+
+<!-- ─── FOOTER ─────────────────────────────────────────────────── -->
+<footer>
+  <div class="footer-top">
+    <div>
+      <div class="footer-logo">Mareno</div>
+      <p class="footer-desc">Considered clothing for the unhurried life. Founded in 2019. Made in Portugal.</p>
+      <div class="footer-social">
+        <a href="#">Instagram</a>
+        <a href="#">Pinterest</a>
+        <a href="#">Newsletter</a>
+      </div>
+    </div>
+    <div>
+      <p class="footer-col-title">Explore</p>
+      <ul class="footer-links">
+        <li><a href="#">New Arrivals</a></li>
+        <li><a href="#">Collections</a></li>
+        <li><a href="#">Lookbook</a></li>
+        <li><a href="#">Collaborations</a></li>
+      </ul>
+    </div>
+    <div>
+      <p class="footer-col-title">Information</p>
+      <ul class="footer-links">
+        <li><a href="#">About Mareno</a></li>
+        <li><a href="#">Sustainability</a></li>
+        <li><a href="#">Stockists</a></li>
+        <li><a href="#">Press</a></li>
+      </ul>
+    </div>
+    <div>
+      <p class="footer-col-title">Support</p>
+      <ul class="footer-links">
+        <li><a href="#">Sizing Guide</a></li>
+        <li><a href="#">Care Instructions</a></li>
+        <li><a href="#">Delivery & Returns</a></li>
+        <li><a href="#">Contact</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span class="footer-copy">© 2026 Mareno. All rights reserved.</span>
+    <div class="footer-legal">
+      <a href="#">Privacy Policy</a>
+      <a href="#">Terms</a>
+      <a href="#">Cookie Settings</a>
+    </div>
+  </div>
+</footer>
+
+<!-- ─── PRODUCT MODAL ──────────────────────────────────────────── -->
+<div class="modal-overlay" id="modal-overlay" onclick="handleOverlayClick(event)">
+  <div class="modal" id="modal" role="dialog" aria-modal="true" aria-label="Product detail">
+    <div class="modal-img-panel" id="modal-img">
+      <button class="modal-close" onclick="closeModal()" aria-label="Close">×</button>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+  </div>
+</div>
+
+<script>
+/* ─── DATA ───────────────────────────────────────────────────── */
+const PRODUCTS = [
+  {
+    id: 0, name: 'Striped Linen Shirt', cat: 'Shirts', price: '£185',
+    img: 'img/IMG_6797.jpeg',
+    desc: 'A relaxed, oversized linen shirt in a classic sky and white stripe. Slightly boxy cut with a soft collar and single chest pocket. Washed for a beautifully broken-in feel from the very first wear.',
+    specs: [['Fabric','100% European Linen'],['Origin','Made in Portugal'],['Fit','Oversized — size down if preferred'],['Care','Machine wash cold, line dry']],
+    sizes: ['XS','S','M','L','XL'], avail: ['XS','S','M','L','XL'],
+  },
+  {
+    id: 1, name: 'White Linen Shirt', cat: 'Shirts', price: '£175',
+    img: 'img/IMG_6794.jpeg',
+    desc: 'The essential white shirt, cut in pure European linen with a relaxed silhouette. The slightly oversized body and soft, broken collar make this as comfortable worn open on the beach as buttoned in the city.',
+    specs: [['Fabric','100% European Linen'],['Origin','Made in Portugal'],['Fit','Regular — true to size'],['Care','Machine wash cold, line dry']],
+    sizes: ['XS','S','M','L','XL'], avail: ['S','M','L','XL'],
+  },
+  {
+    id: 2, name: 'Maritime Linen Shirt', cat: 'Shirts', price: '£175',
+    img: 'img/IMG_6795.jpeg',
+    desc: 'A deep navy linen shirt that draws its name from the Mediterranean. Washed soft and tumbled for texture, it sits with an effortless weight that holds its shape without stiffness.',
+    specs: [['Fabric','100% European Linen'],['Origin','Made in Portugal'],['Fit','Regular — true to size'],['Care','Machine wash cold, line dry']],
+    sizes: ['XS','S','M','L','XL'], avail: ['S','M','L'],
+  },
+  {
+    id: 3, name: 'Sky Linen Shirt', cat: 'Shirts', price: '£195',
+    img: 'img/IMG_6796.jpeg',
+    desc: 'A pale sky blue shirt in a soft, garment-dyed linen. Slightly longer in length with a curved hem, made to wear untucked and unhurried. One of the most versatile pieces in the collection.',
+    specs: [['Fabric','100% Garment-dyed Linen'],['Origin','Made in Portugal'],['Fit','Relaxed — true to size'],['Care','Machine wash cold, line dry']],
+    sizes: ['XS','S','M','L','XL'], avail: ['XS','S','M','L','XL'],
+  },
+  {
+    id: 4, name: 'Sand Short-Sleeve', cat: 'Short-Sleeve', price: '£155', priceOld: '£195',
+    img: 'img/IMG_6800.jpeg',
+    desc: 'A camp-collar short-sleeve shirt in a crinkle-textured linen. The tonal sand colour and relaxed body make it the easiest shirt we make — pair it with anything and wear it everywhere.',
+    specs: [['Fabric','100% Crinkle Linen'],['Origin','Made in Portugal'],['Fit','Regular — true to size'],['Care','Machine wash cold, line dry']],
+    sizes: ['XS','S','M','L','XL'], avail: ['XS','S','M'],
+  },
+  {
+    id: 5, name: 'Sage Stripe Shirt', cat: 'Shirts', price: '£195',
+    img: 'img/IMG_6801.jpeg',
+    desc: 'A long-sleeved shirt in a sage and white vertical stripe, cut in a fine-weight linen. The open collar and relaxed body give it an easy Mediterranean character — dressed up or down without effort.',
+    specs: [['Fabric','100% Fine Linen'],['Origin','Made in Portugal'],['Fit','Relaxed — true to size'],['Care','Machine wash cold, line dry']],
+    sizes: ['XS','S','M','L','XL'], avail: ['XS','S','M','L','XL'],
+  },
+];
+
+const selectedSize = {};
+
+
+/* ─── OPEN MODAL ─────────────────────────────────────────────── */
+function openModal(id) {
+  const p = PRODUCTS[id];
+  const imgPanel = document.getElementById('modal-img');
+  const body = document.getElementById('modal-body');
+
+  imgPanel.style.background = 'var(--sand)';
+  imgPanel.innerHTML = `
+    <button class="modal-close" onclick="closeModal()" aria-label="Close">×</button>
+    <img src="${p.img}" alt="${p.name}">
+    <div class="modal-img-cat">${p.cat.toUpperCase()}</div>
+  `;
+
+  const sel = selectedSize[id] || '';
+  const sizesHTML = p.sizes.map(s => {
+    const unavail = !p.avail.includes(s);
+    const active = sel === s;
+    return `<button class="size-btn${unavail ? ' unavail' : ''}${active ? ' active' : ''}"
+      onclick="pickSize(${id},'${s}',this)"${unavail ? ' disabled' : ''}>${s}</button>`;
+  }).join('');
+
+  const specsHTML = p.specs.map(([k, v]) =>
+    `<div class="spec-row"><div class="spec-k">${k}</div><div class="spec-v">${v}</div></div>`
+  ).join('');
+
+  const oldHTML = p.priceOld ? `<span class="m-price-old">${p.priceOld}</span>` : '';
+
+  body.innerHTML = `
+    <p class="m-kicker">${p.cat}</p>
+    <h2 class="m-title">${p.name}</h2>
+    <div class="m-price">${p.price} ${oldHTML}</div>
+    <div class="m-rule"></div>
+    <p class="m-desc">${p.desc}</p>
+    <p class="m-size-label">Select Size</p>
+    <div class="m-sizes" id="sizes-${id}">${sizesHTML}</div>
+    <div class="m-actions">
+      <button class="btn btn-dark" id="wish-btn-${id}" onclick="modalWishlist(${id})">Save to Wishlist</button>
+      <button class="btn btn-outline" onclick="enquire(${id})">Enquire About This Piece</button>
+    </div>
+    <div class="m-specs">${specsHTML}</div>
+  `;
+
+  document.getElementById('modal-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  document.getElementById('modal-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function handleOverlayClick(e) {
+  if (e.target === document.getElementById('modal-overlay')) closeModal();
+}
+
+function pickSize(id, s, el) {
+  selectedSize[id] = s;
+  document.getElementById(`sizes-${id}`).querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+}
+
+function modalWishlist(id) {
+  const btn = document.getElementById(`wish-btn-${id}`);
+  btn.textContent = 'Saved to Wishlist ✓';
+  btn.style.background = 'var(--olive)';
+  setTimeout(() => { btn.textContent = 'Save to Wishlist'; btn.style.background = ''; }, 2500);
+}
+
+function enquire(id) {
+  closeModal();
+  setTimeout(() => document.querySelector('.newsletter').scrollIntoView({ behavior: 'smooth' }), 350);
+}
+
+/* ─── WISHLIST TOGGLE ON CARD ────────────────────────────────── */
+function toggleWishlist(btn) {
+  const svg = btn.querySelector('svg');
+  const saved = btn.dataset.saved === '1';
+  svg.style.fill = saved ? 'none' : 'var(--charcoal)';
+  btn.dataset.saved = saved ? '0' : '1';
+}
+
+/* ─── CATEGORY FILTER ────────────────────────────────────────── */
+function filterCat(cat, clickedBtn) {
+  document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+  if (clickedBtn) clickedBtn.classList.add('active');
+
+  document.querySelectorAll('#products-grid .product-card').forEach(card => {
+    const cats = card.dataset.cats || '';
+    card.dataset.hidden = (cat === 'all' || cats.split(' ').includes(cat)) ? 'false' : 'true';
+  });
+
+  scrollTo('collection');
+}
+
+/* ─── NEWSLETTER ─────────────────────────────────────────────── */
+function handleSubscribe(e) {
+  e.preventDefault();
+  const btn = e.target.querySelector('button');
+  const input = e.target.querySelector('input');
+  btn.textContent = "You're In ✓";
+  btn.style.background = 'var(--olive)';
+  input.value = '';
+  input.placeholder = 'Welcome to the Private Edit.';
+  setTimeout(() => { btn.textContent = 'Subscribe'; btn.style.background = ''; }, 3200);
+}
+
+/* ─── SMOOTH SCROLL HELPERS ──────────────────────────────────── */
+function getStickyOffset() {
+  const ann = document.querySelector('.announcement');
+  const nav = document.querySelector('.nav');
+  return (ann ? ann.offsetHeight : 0) + (nav ? nav.offsetHeight : 0);
+}
+
+function scrollTo(id, gap = 0) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const top = el.getBoundingClientRect().top + window.scrollY - getStickyOffset() - gap;
+  window.scrollTo({ top, behavior: 'smooth' });
+}
+
+function scrollToNewIn() {
+  // Activate New Arrivals filter, then scroll to collection
+  const btn = [...document.querySelectorAll('.cat-btn')].find(b => b.textContent === 'New Arrivals');
+  filterCat('new', btn);
+}
+
+/* ─── MOBILE NAV ─────────────────────────────────────────────── */
+function toggleMobileNav() {
+  document.getElementById('mobile-nav').classList.toggle('open');
+}
+function closeMobileNav() {
+  document.getElementById('mobile-nav').classList.remove('open');
+}
+
+/* ─── NAV SCROLL SHADOW ──────────────────────────────────────── */
+window.addEventListener('scroll', () => {
+  document.getElementById('main-nav').classList.toggle('scrolled', window.scrollY > 60);
+}, { passive: true });
+
+/* ─── ESCAPE KEY ─────────────────────────────────────────────── */
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+</script>
+</body>
+</html>

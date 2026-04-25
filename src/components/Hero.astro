@@ -1,0 +1,44 @@
+---
+interface Props { heroImg: string; }
+const { heroImg } = Astro.props;
+---
+<section class="hero" aria-label="Hero">
+  <div class="hero-bg anim-scale-in">
+    <img
+      id="hero-image"
+      src={heroImg}
+      alt="Mediterranean courtyard — Mareno SS 2026"
+      fetchpriority="high"
+    />
+  </div>
+
+  <!-- Large ghost watermark letter -->
+  <div class="hero-watermark" aria-hidden="true">M</div>
+
+  <div class="hero-content">
+    <div class="hero-left">
+      <p class="hero-kicker anim-fade-up delay-300">Spring / Summer 2026</p>
+      <h1 class="hero-headline anim-fade-up delay-400">
+        Dressed for<br>the <em>Long View</em>
+      </h1>
+      <div class="hero-rule"></div>
+      <p class="hero-sub anim-fade-up delay-500">
+        Considered garments for the unhurried life.<br>
+        Each piece crafted to transcend the season.
+      </p>
+      <div class="hero-actions anim-fade-up delay-600">
+        <a href="#collection" class="btn btn-primary" onclick="scrollSection('collection');return false;">Explore Collection</a>
+        <a href="#editorial" class="btn btn-secondary" onclick="scrollSection('editorial',40);return false;">View Lookbook</a>
+      </div>
+    </div>
+
+    <div class="hero-right anim-fade-in delay-800">
+      <div class="hero-counter">SS 2026 — 01 / 08</div>
+      <div class="hero-scroll">
+        <span>Scroll</span>
+        <div class="hero-scroll-line"></div>
+      </div>
+    </div>
+  </div>
+</section>
+

@@ -1,0 +1,21 @@
+---
+---
+
+<nav class="cat-nav" id="collection" aria-label="Product categories">
+  <button class="cat-btn active" onclick="filterCat('all',this)">All</button>
+  <button class="cat-btn" onclick="filterCat('new',this)">New Arrivals</button>
+  <button class="cat-btn" onclick="filterCat('shirts',this)">Shirts</button>
+  <button class="cat-btn" onclick="filterCat('shortsleeve',this)">Short-Sleeve</button>
+  <button class="cat-btn" onclick="filterCat('trousers',this)">Trousers</button>
+  <button class="cat-btn" onclick="filterCat('shorts',this)">Shorts</button>
+</nav>
+
+<section class="collection" aria-label="Product collection">
+  <div class="section-label reveal">
+    <span class="sec-num">01</span>
+    <span class="sec-title">The Collection</span>
+    <div class="sec-rule"></div>
+  </div>
+  <div class="products-grid" id="products-grid"></div>
+  <div class="pagination" id="pagination" aria-label="Collection pages"></div>
+</section>
