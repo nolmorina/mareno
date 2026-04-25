@@ -178,7 +178,7 @@ const currentUser = user.username;
   /* ── SUMMARY ROW ─────────────────────────────────────────────── */
   .adm-summary {
     display: grid;
-    grid-template-columns: 48px 80px 1fr 110px;
+    grid-template-columns: 48px auto 1fr 110px;
     align-items: stretch;
     min-height: 100px;
   }
@@ -200,23 +200,24 @@ const currentUser = user.username;
   .adm-arr:hover:not(:disabled) { background: var(--ch); color: var(--iv); border-color: var(--ch); }
   .adm-arr:disabled { opacity: .18; cursor: default; }
 
-  /* image column — strictly 80×100px */
-  .adm-col-img {
-    width: 80px;
-    height: 100px;           /* explicit height — image never overflows */
-    flex-shrink: 0;
-    position: relative;
-    overflow: hidden;        /* clips anything larger than container */
-    cursor: pointer;
+  /* image strip — horizontal row of thumbnails */
+  .adm-col-img-strip {
+    display: flex; align-items: stretch;
+    overflow-x: auto; scrollbar-width: none;
     border-right: 1px solid var(--border);
+  }
+  .adm-col-img-strip::-webkit-scrollbar { display: none; }
+
+  /* individual thumbnail — 80×100 */
+  .adm-col-img {
+    width: 80px; min-width: 80px; height: 100px;
+    flex-shrink: 0; position: relative; overflow: hidden;
+    cursor: pointer; border-right: 1px solid var(--border);
     background: #e0dbd2;
   }
   .adm-col-img img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    object-position: center center;
-    display: block;
+    width: 100%; height: 100%;
+    object-fit: contain; object-position: center center; display: block;
   }
   .adm-img-hover {
     position: absolute; inset: 0;
@@ -226,6 +227,28 @@ const currentUser = user.username;
     opacity: 0; transition: opacity .2s;
   }
   .adm-col-img:hover .adm-img-hover { opacity: 1; }
+
+  /* extra thumbnail — remove button on hover */
+  .adm-extra-thumb { cursor: default; }
+  .adm-extra-thumb-rm {
+    position: absolute; top: 3px; left: 3px;
+    width: 20px; height: 20px; background: rgba(26,26,26,.65); color: #fff;
+    border: none; font-size: 13px; line-height: 1;
+    align-items: center; justify-content: center;
+    cursor: pointer; z-index: 5; display: none; transition: background .15s;
+  }
+  .adm-extra-thumb:hover .adm-extra-thumb-rm { display: flex; }
+  .adm-extra-thumb-rm:hover { background: var(--danger); }
+
+  /* add-image button at end of strip */
+  .adm-col-img-add {
+    width: 44px; min-width: 44px; background: none; border: none;
+    border-left: 1px dashed var(--border);
+    font-size: 22px; color: var(--taupe);
+    cursor: pointer; transition: all .15s; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .adm-col-img-add:hover { background: #f0ede8; color: var(--ch); }
 
   /* fields column */
   .adm-col-fields {
@@ -480,18 +503,21 @@ const currentUser = user.username;
   }
   .adm-np-submit:hover { opacity: .78; }
 
-  /* ── EXTRA IMAGES ───────────────────────────────────────────── */
-  .adm-extra-imgs { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 6px; }
-  .adm-extra-img-wrap { position: relative; width: 80px; height: 80px; border: 1px solid var(--border); overflow: hidden; background: #e0dbd2; flex-shrink: 0; }
-  .adm-extra-img-thumb { width: 100%; height: 100%; object-fit: cover; display: block; }
-  .adm-extra-img-rm {
-    position: absolute; top: 3px; right: 3px;
-    width: 20px; height: 20px; background: rgba(26,26,26,.65); color: #fff;
-    border: none; font-size: 13px; line-height: 1;
-    display: flex; align-items: center; justify-content: center;
+  /* ── NEW-PRODUCT EXTRA IMAGES ───────────────────────────────── */
+  .adm-np-extra-wrap {
+    position: relative; width: 72px; height: 72px; flex-shrink: 0;
+    border: 1px solid var(--border); overflow: hidden; background: #e0dbd2;
+  }
+  .adm-np-extra-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .adm-np-extra-rm {
+    position: absolute; top: 2px; right: 2px;
+    width: 18px; height: 18px; background: rgba(26,26,26,.65); color: #fff;
+    border: none; font-size: 12px; line-height: 1; display: none;
+    align-items: center; justify-content: center;
     cursor: pointer; transition: background .15s;
   }
-  .adm-extra-img-rm:hover { background: var(--danger); }
+  .adm-np-extra-wrap:hover .adm-np-extra-rm { display: flex; }
+  .adm-np-extra-rm:hover { background: var(--danger); }
 
   /* ── ACTIVITY LOG ────────────────────────────────────────────── */
   .adm-log-section { margin-top: 48px; }
@@ -705,6 +731,17 @@ const currentUser = user.username;
           <div class="adm-np-img-change">Change image</div>
         </div>
         <p class="adm-np-err" id="np-err-img">Please upload a product image.</p>
+      </div>
+
+      <!-- Additional Images -->
+      <div>
+        <label style="font-size:7px;letter-spacing:0.2em;text-transform:uppercase;color:var(--label-color);font-weight:500;display:block;margin-bottom:8px">
+          Additional Images <span style="font-size:9px;color:var(--taupe);letter-spacing:0;text-transform:none;font-weight:300">(optional)</span>
+        </label>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+          <div id="np-extra-imgs" style="display:contents"></div>
+          <button class="adm-btn-dashed" onclick="addNpExtraImg()" style="width:72px;height:72px;font-size:22px;padding:0;border-style:dashed">+</button>
+        </div>
       </div>
 
       <!-- Name -->
@@ -994,10 +1031,19 @@ function cardHTML(p, i, total) {
       </div>
     </div>
 
-    <!-- Image -->
-    <div class="adm-col-img" onclick="openUpload(${p.id})" title="Click to change image">
-      <img src="${p.img}" id="thumb-${p.id}" alt="" />
-      <div class="adm-img-hover">Change</div>
+    <!-- Images strip: main + extras side by side -->
+    <div class="adm-col-img-strip" id="img-strip-${p.id}">
+      <div class="adm-col-img" onclick="openUpload(${p.id})" title="Click to change main image">
+        <img src="${p.img}" id="thumb-${p.id}" alt="" />
+        <div class="adm-img-hover">Change</div>
+      </div>
+      ${(p.images || []).map(src => `
+        <div class="adm-col-img adm-extra-thumb">
+          <img src="${esc(src)}" alt="" />
+          <button class="adm-extra-thumb-rm" onclick="event.stopPropagation();removeThumbImg(this)" aria-label="Remove">×</button>
+          <input type="hidden" class="adm-extra-img-url" value="${esc(src)}" />
+        </div>`).join('')}
+      <button class="adm-col-img-add" onclick="addExtraImg(${p.id})" title="Add image">+</button>
     </div>
 
     <!-- Fields -->
@@ -1073,21 +1119,6 @@ function cardHTML(p, i, total) {
           <div class="adm-size-grid">${sizeBtns}</div>
           <p class="adm-sizes-hint">Filled = available &nbsp;·&nbsp; Faded = unavailable</p>
         </div>
-      </div>
-
-      <!-- Additional Images — full width -->
-      <div class="adm-section adm-detail-full">
-        <div class="adm-section-title">Additional Images</div>
-        <div class="adm-extra-imgs" id="extra-imgs-${p.id}">
-          ${(p.images || []).map(src => `
-            <div class="adm-extra-img-wrap">
-              <img class="adm-extra-img-thumb" src="${esc(src)}" alt="" />
-              <button class="adm-extra-img-rm" onclick="removeExtraImg(this)" aria-label="Remove image">×</button>
-              <input type="hidden" class="adm-extra-img-url" value="${esc(src)}" />
-            </div>`).join('')}
-        </div>
-        <button class="adm-btn-dashed" onclick="addExtraImg(${p.id})" style="margin-top:8px">+ Add Image</button>
-        <p style="font-size:9px;color:var(--taupe);margin-top:6px">Images appear in the product gallery in order. The main image (above) is always first.</p>
       </div>
 
       <!-- Filter tags — full width -->
@@ -1174,11 +1205,12 @@ function moveDown(id) {
 }
 
 /* ── ADD PRODUCT PANEL ─────────────────────────────────────────── */
-let npImg = ''; // stores base64 or path of new product image
+let npImg = ''; // stores URL of main product image
 
 function addProduct() {
   // reset form
   npImg = '';
+  npImages = [];
   document.getElementById('np-name').value  = '';
   document.getElementById('np-price').value = '';
   document.getElementById('np-old').value   = '';
@@ -1187,6 +1219,7 @@ function addProduct() {
   const zone = document.getElementById('np-img-zone');
   zone.classList.remove('has-img');
   zone.querySelector('img')?.remove();
+  document.getElementById('np-extra-imgs').innerHTML = '';
   // clear errors
   ['np-err-img','np-err-name','np-err-price'].forEach(id => {
     document.getElementById(id).classList.remove('show');
@@ -1270,6 +1303,7 @@ function submitNewProduct() {
         name, cat, cats: catTag,
         price, priceOld: old, badge,
         img: npImg,
+        images: [...npImages],
         colors: [{ bg:'#DCCEB8', title:'Sand' }],
         desc: '',
         specs: [['Fabric',''],['Origin','Made in Portugal']],
@@ -1308,8 +1342,8 @@ function toggleSize(btn) {
   btn.classList.toggle('out', isIn);
 }
 
-/* ── EXTRA IMAGES ──────────────────────────────────────────────── */
-function removeExtraImg(btn) { btn.closest('.adm-extra-img-wrap').remove(); }
+/* ── EXTRA IMAGES (strip) ──────────────────────────────────────── */
+function removeThumbImg(btn) { btn.closest('.adm-extra-thumb').remove(); }
 
 function addExtraImg(id) {
   const input = document.createElement('input');
@@ -1321,18 +1355,53 @@ function addExtraImg(id) {
     showToast('Uploading image…');
     try {
       const url = await uploadFile(file);
-      const container = document.getElementById(`extra-imgs-${id}`);
+      const strip = document.getElementById(`img-strip-${id}`);
+      const addBtn = strip.querySelector('.adm-col-img-add');
       const wrap = document.createElement('div');
-      wrap.className = 'adm-extra-img-wrap';
+      wrap.className = 'adm-col-img adm-extra-thumb';
       wrap.innerHTML = `
-        <img class="adm-extra-img-thumb" src="${url}" alt="" />
-        <button class="adm-extra-img-rm" onclick="removeExtraImg(this)" aria-label="Remove image">×</button>
+        <img src="${url}" alt="" />
+        <button class="adm-extra-thumb-rm" onclick="event.stopPropagation();removeThumbImg(this)" aria-label="Remove">×</button>
         <input type="hidden" class="adm-extra-img-url" value="${url}" />`;
+      strip.insertBefore(wrap, addBtn);
+      showToast('Image added');
+    } catch (err) { showToast('Upload failed: ' + err.message); }
+  };
+  input.click();
+}
+
+/* ── EXTRA IMAGES (new product panel) ─────────────────────────── */
+let npImages = [];
+
+function addNpExtraImg() {
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = 'image/*';
+  input.onchange = async function () {
+    const file = this.files[0];
+    if (!file) return;
+    showToast('Uploading image…');
+    try {
+      const url = await uploadFile(file);
+      npImages.push(url);
+      const container = document.getElementById('np-extra-imgs');
+      const wrap = document.createElement('div');
+      wrap.className = 'adm-np-extra-wrap';
+      wrap.dataset.url = url;
+      wrap.innerHTML = `
+        <img src="${url}" alt="" />
+        <button class="adm-np-extra-rm" onclick="removeNpExtraImg(this)" aria-label="Remove">×</button>`;
       container.appendChild(wrap);
       showToast('Image added');
     } catch (err) { showToast('Upload failed: ' + err.message); }
   };
   input.click();
+}
+
+function removeNpExtraImg(btn) {
+  const wrap = btn.closest('.adm-np-extra-wrap');
+  npImages = npImages.filter(u => u !== wrap.dataset.url);
+  wrap.remove();
 }
 
 /* ── COLOURS ───────────────────────────────────────────────────── */
