@@ -148,8 +148,10 @@ function renderPagination(total) {
 }
 
 window.changePage = function(page) {
+  const y = window.scrollY;
   currentPage = page;
   renderPage();
+  window.scrollTo({ top: y, behavior: 'instant' });
 };
 
 /* ─── INIT ─────────────────────────────────────────────────────── */
