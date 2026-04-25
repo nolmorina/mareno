@@ -86,11 +86,6 @@ function renderProductGrid() {
         <div class="prod-img-wrap">
           <img src="${esc(p.img)}" alt="${esc(p.name)}" loading="lazy" />
           ${badge}
-          <button class="prod-wishlist" onclick="event.stopPropagation();toggleWishlist(this)" aria-label="Save to wishlist">
-            <svg width="17" height="15" viewBox="0 0 17 15" fill="none" stroke="#1A1A1A" stroke-width="1.2">
-              <path d="M8.5 13.5S1 9 1 4.5a4 4 0 0 1 7.5-2A4 4 0 0 1 16 4.5c0 4.5-7.5 9-7.5 9z"/>
-            </svg>
-          </button>
           <button class="prod-quick" onclick="event.stopPropagation();openModal(${p.id})">Quick View</button>
         </div>
         <div class="prod-info">
@@ -100,7 +95,6 @@ function renderProductGrid() {
             <span class="prod-price">${esc(p.price)}</span>
             ${priceOld}
           </div>
-          <div class="prod-colors">${colors}</div>
         </div>
       </article>`;
   }).join('');
@@ -227,12 +221,8 @@ window.openModal = function(id) {
     <div class="m-price">${esc(p.price)} ${oldHTML}</div>
     <div class="m-rule"></div>
     <p class="m-desc">${esc(p.desc)}</p>
-    <p class="m-size-label">Select Size</p>
+    <p class="m-size-label">Available Sizes</p>
     <div class="m-sizes" id="sizes-${id}">${sizesHTML}</div>
-    <div class="m-actions">
-      <button class="btn btn-dark" id="wish-btn-${id}" onclick="modalWishlist(${id})">Save to Wishlist</button>
-      <button class="btn btn-outline" onclick="enquire(${id})">Enquire About This Piece</button>
-    </div>
     <div class="m-specs">${specsHTML}</div>
   `;
 

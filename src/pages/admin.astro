@@ -1045,15 +1045,15 @@ function cardHTML(p, i, total) {
 
       <!-- Sizes -->
       <div class="adm-section">
-        <div class="adm-section-title">Sizes &amp; Stock</div>
+        <div class="adm-section-title">Available Sizes</div>
         <div class="adm-fgroup">
           <label>All sizes — comma separated</label>
           <input class="adm-fi fi-sizes" value="${(p.sizes || []).join(', ')}" />
         </div>
         <div class="adm-fgroup">
-          <label>Click to toggle in stock / sold out</label>
+          <label>Click a size to mark available · Click again to mark unavailable</label>
           <div class="adm-size-grid">${sizeBtns}</div>
-          <p class="adm-sizes-hint">Filled = in stock &nbsp;·&nbsp; Faded = sold out</p>
+          <p class="adm-sizes-hint">Filled = available &nbsp;·&nbsp; Faded = unavailable</p>
         </div>
       </div>
 
