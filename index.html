@@ -326,11 +326,13 @@ button { font-family: inherit; }
 .collection {
   padding: 64px 60px 88px;
   background: var(--ivory);
+  overflow-anchor: none;
 }
 .products-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 2px;
+  overflow-anchor: none;
 }
 
 /* ─── PRODUCT CARD ───────────────────────────────────────────── */
@@ -624,11 +626,12 @@ footer {
   background: var(--charcoal);
   color: var(--ivory);
   padding: 72px 60px 44px;
+  text-align: center;
 }
 .footer-top {
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1fr;
-  gap: 52px;
+  grid-template-columns: 1fr;
+  justify-items: center;
   margin-bottom: 60px;
   padding-bottom: 60px;
   border-bottom: 1px solid rgba(255,255,255,0.07);
@@ -649,9 +652,9 @@ footer {
   color: rgba(243,241,236,0.4);
   letter-spacing: 0.03em;
   max-width: 260px;
-  margin-bottom: 28px;
+  margin: 0 auto 28px;
 }
-.footer-social { display: flex; gap: 18px; }
+.footer-social { display: flex; justify-content: center; gap: 18px; }
 .footer-social a {
   font-family: var(--sans);
   font-size: 8px;
@@ -661,33 +664,12 @@ footer {
   transition: color 0.2s;
 }
 .footer-social a:hover { color: var(--ivory); }
-.footer-col-title {
-  font-family: var(--sans);
-  font-size: 9px;
-  letter-spacing: 0.24em;
-  text-transform: uppercase;
-  font-weight: 500;
-  margin-bottom: 22px;
-}
-.footer-links {
-  list-style: none;
-  display: flex;
-  flex-direction: column;
-  gap: 13px;
-}
-.footer-links a {
-  font-family: var(--sans);
-  font-size: 11px;
-  font-weight: 300;
-  color: rgba(243,241,236,0.4);
-  letter-spacing: 0.06em;
-  transition: color 0.2s;
-}
-.footer-links a:hover { color: var(--ivory); }
 .footer-bottom {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
+  justify-content: center;
   align-items: center;
+  gap: 18px;
 }
 .footer-copy {
   font-family: var(--sans);
@@ -695,7 +677,7 @@ footer {
   letter-spacing: 0.12em;
   color: rgba(243,241,236,0.25);
 }
-.footer-legal { display: flex; gap: 24px; }
+.footer-legal { display: flex; justify-content: center; gap: 24px; }
 .footer-legal a {
   font-family: var(--sans);
   font-size: 9px;
@@ -810,7 +792,7 @@ footer {
   .hero-scroll { left: 52px; }
   .ed-content { padding: 72px 52px; }
   .values-grid { grid-template-columns: 1fr 1fr; }
-  .footer-top { grid-template-columns: 1fr 1fr; gap: 40px; }
+  .footer-top { grid-template-columns: 1fr; }
 }
 @media (max-width: 900px) {
   .hero { grid-template-columns: 1fr; }
@@ -828,7 +810,7 @@ footer {
   .values { padding: 72px 28px; }
   .newsletter { padding: 80px 28px; }
   footer { padding: 56px 28px 36px; }
-  .footer-top { grid-template-columns: 1fr 1fr; }
+  .footer-top { grid-template-columns: 1fr; }
   .modal { max-width: 100%; grid-template-columns: 1fr; }
   .modal-img-panel { min-height: 50vh; max-height: 50vh; }
   .modal-body { padding: 40px 32px; }
@@ -844,7 +826,7 @@ footer {
   .hero-scroll { left: 24px; }
   .products-grid { grid-template-columns: 1fr; }
   .values-grid { grid-template-columns: 1fr; }
-  .footer-top { grid-template-columns: 1fr; gap: 36px; }
+  .footer-top { grid-template-columns: 1fr; }
   .footer-bottom { flex-direction: column; gap: 14px; text-align: center; }
   .nl-form { flex-direction: column; gap: 16px; }
   .nl-submit { margin-left: 0; width: 100%; }
@@ -856,10 +838,6 @@ footer {
 <!-- ─── ANNOUNCEMENT ──────────────────────────────────────────── -->
 <div class="announcement" role="banner">
   <span class="ann-text">New Collection — Spring Summer 2026</span>
-  <span class="ann-dot"></span>
-  <span class="ann-text">Free Delivery on Orders Over £200</span>
-  <span class="ann-dot"></span>
-  <span class="ann-text">Now in Stores · London · Paris · Milan</span>
 </div>
 
 <!-- ─── NAVIGATION ────────────────────────────────────────────── -->
@@ -867,7 +845,6 @@ footer {
   <ul class="nav-left">
     <li><a href="#collection" class="active" onclick="scrollTo('collection');return false;">Collections</a></li>
     <li><a href="#collection" onclick="scrollToNewIn();return false;">New In</a></li>
-    <li><a href="#editorial" onclick="scrollTo('editorial', 40);return false;">Lookbook</a></li>
     <li><a href="#about" onclick="scrollTo('about');return false;">About</a></li>
   </ul>
   <a href="#" class="nav-logo">Mareno</a>
@@ -885,7 +862,6 @@ footer {
 <div class="mobile-nav" id="mobile-nav">
   <a href="#collection" onclick="closeMobileNav();scrollTo('collection');return false;">Collections</a>
   <a href="#collection" onclick="closeMobileNav();scrollToNewIn();return false;">New In</a>
-  <a href="#editorial" onclick="closeMobileNav();scrollTo('editorial', 40);return false;">Lookbook</a>
   <a href="#about" onclick="closeMobileNav();scrollTo('about');return false;">About</a>
 </div>
 
@@ -903,7 +879,6 @@ footer {
     </p>
     <div class="hero-actions">
       <a href="#collection" class="btn btn-primary" onclick="scrollTo('collection');return false;">Explore Collection</a>
-      <a href="#editorial" class="btn btn-secondary" onclick="scrollTo('editorial', 40);return false;">View Lookbook</a>
     </div>
     <div class="hero-scroll">
       <span class="hero-scroll-line"></span>
@@ -949,7 +924,7 @@ footer {
       <div class="prod-info">
         <p class="prod-cat">Shirts</p>
         <h3 class="prod-name">Striped Linen Shirt</h3>
-        <div class="prod-price-row"><span class="prod-price">£185</span></div>
+        <div class="prod-price-row"><span class="prod-price">€185</span></div>
         <div class="prod-colors">
           <span class="color-dot active" style="background:#B8D4E8;" title="Sky"></span>
           <span class="color-dot" style="background:#6B705F;" title="Sage"></span>
@@ -969,7 +944,7 @@ footer {
       <div class="prod-info">
         <p class="prod-cat">Shirts</p>
         <h3 class="prod-name">White Linen Shirt</h3>
-        <div class="prod-price-row"><span class="prod-price">£175</span></div>
+        <div class="prod-price-row"><span class="prod-price">€175</span></div>
         <div class="prod-colors">
           <span class="color-dot active" style="background:#F3F1EC;" title="White"></span>
           <span class="color-dot" style="background:#E8E2D8;" title="Ecru"></span>
@@ -990,7 +965,7 @@ footer {
       <div class="prod-info">
         <p class="prod-cat">Shirts</p>
         <h3 class="prod-name">Maritime Linen Shirt</h3>
-        <div class="prod-price-row"><span class="prod-price">£175</span></div>
+        <div class="prod-price-row"><span class="prod-price">€175</span></div>
         <div class="prod-colors">
           <span class="color-dot active" style="background:#2E4A72;" title="Navy"></span>
           <span class="color-dot" style="background:#6B705F;" title="Olive"></span>
@@ -1012,7 +987,7 @@ footer {
       <div class="prod-info">
         <p class="prod-cat">Shirts</p>
         <h3 class="prod-name">Sky Linen Shirt</h3>
-        <div class="prod-price-row"><span class="prod-price">£195</span></div>
+        <div class="prod-price-row"><span class="prod-price">€195</span></div>
         <div class="prod-colors">
           <span class="color-dot active" style="background:#B8D4E8;" title="Sky"></span>
           <span class="color-dot" style="background:#F3F1EC;" title="White"></span>
@@ -1034,8 +1009,8 @@ footer {
         <p class="prod-cat">Short-Sleeve</p>
         <h3 class="prod-name">Sand Short-Sleeve</h3>
         <div class="prod-price-row">
-          <span class="prod-price">£155</span>
-          <span class="prod-price-old">£195</span>
+          <span class="prod-price">€155</span>
+          <span class="prod-price-old">€195</span>
         </div>
         <div class="prod-colors">
           <span class="color-dot active" style="background:#C8B898;" title="Sand"></span>
@@ -1057,7 +1032,7 @@ footer {
       <div class="prod-info">
         <p class="prod-cat">Shirts</p>
         <h3 class="prod-name">Sage Stripe Shirt</h3>
-        <div class="prod-price-row"><span class="prod-price">£195</span></div>
+        <div class="prod-price-row"><span class="prod-price">€195</span></div>
         <div class="prod-colors">
           <span class="color-dot active" style="background:#8FA898;" title="Sage"></span>
           <span class="color-dot" style="background:#F3F1EC;" title="White"></span>
@@ -1091,10 +1066,6 @@ footer {
       No spectacle. No noise. Only the garment,
       the body, and the space between them.
     </p>
-    <div class="ed-actions">
-      <a href="#editorial" class="btn btn-primary" onclick="scrollTo('editorial', 40);return false;">View Lookbook</a>
-      <a href="#collection" class="btn btn-secondary" onclick="scrollTo('collection');return false;">Shop the Edit</a>
-    </div>
   </div>
 </section>
 
@@ -1163,39 +1134,12 @@ footer {
   <div class="footer-top">
     <div>
       <div class="footer-logo">Mareno</div>
-      <p class="footer-desc">Considered clothing for the unhurried life. Founded in 2019. Made in Portugal.</p>
+      <p class="footer-desc">Considered clothing for the unhurried life.</p>
       <div class="footer-social">
         <a href="#">Instagram</a>
         <a href="#">Pinterest</a>
         <a href="#">Newsletter</a>
       </div>
-    </div>
-    <div>
-      <p class="footer-col-title">Explore</p>
-      <ul class="footer-links">
-        <li><a href="#">New Arrivals</a></li>
-        <li><a href="#">Collections</a></li>
-        <li><a href="#">Lookbook</a></li>
-        <li><a href="#">Collaborations</a></li>
-      </ul>
-    </div>
-    <div>
-      <p class="footer-col-title">Information</p>
-      <ul class="footer-links">
-        <li><a href="#">About Mareno</a></li>
-        <li><a href="#">Sustainability</a></li>
-        <li><a href="#">Stockists</a></li>
-        <li><a href="#">Press</a></li>
-      </ul>
-    </div>
-    <div>
-      <p class="footer-col-title">Support</p>
-      <ul class="footer-links">
-        <li><a href="#">Sizing Guide</a></li>
-        <li><a href="#">Care Instructions</a></li>
-        <li><a href="#">Delivery & Returns</a></li>
-        <li><a href="#">Contact</a></li>
-      </ul>
     </div>
   </div>
   <div class="footer-bottom">
@@ -1222,42 +1166,42 @@ footer {
 /* ─── DATA ───────────────────────────────────────────────────── */
 const PRODUCTS = [
   {
-    id: 0, name: 'Striped Linen Shirt', cat: 'Shirts', price: '£185',
+    id: 0, name: 'Striped Linen Shirt', cat: 'Shirts', price: '€185',
     img: 'img/IMG_6797.jpeg',
     desc: 'A relaxed, oversized linen shirt in a classic sky and white stripe. Slightly boxy cut with a soft collar and single chest pocket. Washed for a beautifully broken-in feel from the very first wear.',
     specs: [['Fabric','100% European Linen'],['Origin','Made in Portugal'],['Fit','Oversized — size down if preferred'],['Care','Machine wash cold, line dry']],
     sizes: ['XS','S','M','L','XL'], avail: ['XS','S','M','L','XL'],
   },
   {
-    id: 1, name: 'White Linen Shirt', cat: 'Shirts', price: '£175',
+    id: 1, name: 'White Linen Shirt', cat: 'Shirts', price: '€175',
     img: 'img/IMG_6794.jpeg',
     desc: 'The essential white shirt, cut in pure European linen with a relaxed silhouette. The slightly oversized body and soft, broken collar make this as comfortable worn open on the beach as buttoned in the city.',
     specs: [['Fabric','100% European Linen'],['Origin','Made in Portugal'],['Fit','Regular — true to size'],['Care','Machine wash cold, line dry']],
     sizes: ['XS','S','M','L','XL'], avail: ['S','M','L','XL'],
   },
   {
-    id: 2, name: 'Maritime Linen Shirt', cat: 'Shirts', price: '£175',
+    id: 2, name: 'Maritime Linen Shirt', cat: 'Shirts', price: '€175',
     img: 'img/IMG_6795.jpeg',
     desc: 'A deep navy linen shirt that draws its name from the Mediterranean. Washed soft and tumbled for texture, it sits with an effortless weight that holds its shape without stiffness.',
     specs: [['Fabric','100% European Linen'],['Origin','Made in Portugal'],['Fit','Regular — true to size'],['Care','Machine wash cold, line dry']],
     sizes: ['XS','S','M','L','XL'], avail: ['S','M','L'],
   },
   {
-    id: 3, name: 'Sky Linen Shirt', cat: 'Shirts', price: '£195',
+    id: 3, name: 'Sky Linen Shirt', cat: 'Shirts', price: '€195',
     img: 'img/IMG_6796.jpeg',
     desc: 'A pale sky blue shirt in a soft, garment-dyed linen. Slightly longer in length with a curved hem, made to wear untucked and unhurried. One of the most versatile pieces in the collection.',
     specs: [['Fabric','100% Garment-dyed Linen'],['Origin','Made in Portugal'],['Fit','Relaxed — true to size'],['Care','Machine wash cold, line dry']],
     sizes: ['XS','S','M','L','XL'], avail: ['XS','S','M','L','XL'],
   },
   {
-    id: 4, name: 'Sand Short-Sleeve', cat: 'Short-Sleeve', price: '£155', priceOld: '£195',
+    id: 4, name: 'Sand Short-Sleeve', cat: 'Short-Sleeve', price: '€155', priceOld: '€195',
     img: 'img/IMG_6800.jpeg',
     desc: 'A camp-collar short-sleeve shirt in a crinkle-textured linen. The tonal sand colour and relaxed body make it the easiest shirt we make — pair it with anything and wear it everywhere.',
     specs: [['Fabric','100% Crinkle Linen'],['Origin','Made in Portugal'],['Fit','Regular — true to size'],['Care','Machine wash cold, line dry']],
     sizes: ['XS','S','M','L','XL'], avail: ['XS','S','M'],
   },
   {
-    id: 5, name: 'Sage Stripe Shirt', cat: 'Shirts', price: '£195',
+    id: 5, name: 'Sage Stripe Shirt', cat: 'Shirts', price: '€195',
     img: 'img/IMG_6801.jpeg',
     desc: 'A long-sleeved shirt in a sage and white vertical stripe, cut in a fine-weight linen. The open collar and relaxed body give it an easy Mediterranean character — dressed up or down without effort.',
     specs: [['Fabric','100% Fine Linen'],['Origin','Made in Portugal'],['Fit','Relaxed — true to size'],['Care','Machine wash cold, line dry']],

@@ -766,13 +766,26 @@ const currentUser = user.username;
           </select>
         </div>
         <div class="adm-fgroup">
-          <label>Price <span style="color:var(--danger)">*</span></label>
-          <input class="adm-fi" id="np-price" placeholder="e.g. £175" />
+          <label>Second Category</label>
+          <select class="adm-fi" id="np-cat-secondary">
+            <option value="">None</option>
+            <option value="Shirts">Shirts</option>
+            <option value="Short-Sleeve">Short-Sleeve</option>
+            <option value="Trousers">Trousers</option>
+            <option value="Shorts">Shorts</option>
+            <option value="Knitwear">Knitwear</option>
+            <option value="Jackets">Jackets</option>
+            <option value="Accessories">Accessories</option>
+          </select>
+        </div>
+        <div class="adm-fgroup">
+          <label>Regular Price <span style="color:var(--danger)">*</span></label>
+          <input class="adm-fi" id="np-price" placeholder="e.g. €175" />
           <p class="adm-np-err" id="np-err-price">Price is required.</p>
         </div>
         <div class="adm-fgroup">
           <label>Sale Price</label>
-          <input class="adm-fi" id="np-old" placeholder="—" />
+          <input class="adm-fi" id="np-old" placeholder="e.g. €155" />
         </div>
       </div>
 
@@ -796,6 +809,55 @@ let products = [];
 let hero     = { img: '' };
 let editorial = { img: '' };
 let uploadTargetId = null;
+
+const CATEGORY_OPTIONS = ['Shirts','Short-Sleeve','Trousers','Shorts','Knitwear','Jackets','Accessories'];
+const CATEGORY_TAGS = {
+  'Shirts': 'shirts',
+  'Short-Sleeve': 'shortsleeve',
+  'Trousers': 'trousers',
+  'Shorts': 'shorts',
+  'Knitwear': 'knitwear',
+  'Jackets': 'jackets',
+  'Accessories': 'accessories',
+};
+const CATEGORY_TAG_VALUES = new Set(Object.values(CATEGORY_TAGS));
+
+function categoryTag(cat) {
+  return CATEGORY_TAGS[cat] ?? String(cat ?? '').toLowerCase().replace(/[^a-z]/g, '');
+}
+
+function categoryOptionsHTML(selected, includeNone = false) {
+  return `${includeNone ? '<option value="">None</option>' : ''}${CATEGORY_OPTIONS.map(c =>
+    `<option value="${c}"${selected === c ? ' selected' : ''}>${c}</option>`
+  ).join('')}`;
+}
+
+function secondaryCategory(p) {
+  const primaryTag = categoryTag(p.cat);
+  const tags = String(p.cats ?? '').split(/\s+/).filter(Boolean);
+  const secondaryTag = tags.find(tag => CATEGORY_TAG_VALUES.has(tag) && tag !== primaryTag);
+  return CATEGORY_OPTIONS.find(cat => categoryTag(cat) === secondaryTag) ?? '';
+}
+
+function extraFilterTags(p) {
+  return String(p.cats ?? '')
+    .split(/\s+/)
+    .filter(tag => tag && !CATEGORY_TAG_VALUES.has(tag))
+    .join(' ');
+}
+
+function composeFilterTags(primary, secondary, extras = '') {
+  const tags = [categoryTag(primary), secondary ? categoryTag(secondary) : ''];
+  tags.push(...String(extras).split(/\s+/).filter(Boolean));
+  return [...new Set(tags.filter(Boolean))].join(' ');
+}
+
+function normalizePrice(value) {
+  const price = String(value ?? '').trim();
+  if (!price) return '';
+  if (price.startsWith('€')) return price;
+  return price.replace(/^[£$]/, '€').replace(/^(?!€)/, '€');
+}
 
 /* ── API HELPERS ───────────────────────────────────────────────── */
 async function apiFetch(url, opts = {}) {
@@ -898,10 +960,10 @@ function collect() {
 
     p.name     = v(card, '.fi-name');
     p.cat      = v(card, '.fi-cat');
-    p.price    = v(card, '.fi-price');
-    p.priceOld = v(card, '.fi-old');
+    p.price    = normalizePrice(v(card, '.fi-price'));
+    p.priceOld = normalizePrice(v(card, '.fi-old'));
     p.badge    = v(card, '.fi-badge');
-    p.cats     = v(card, '.fi-cats');
+    p.cats     = composeFilterTags(p.cat, v(card, '.fi-cat-secondary'), v(card, '.fi-cats'));
     p.desc     = card.querySelector('.adm-fta')?.value ?? p.desc;
 
     p.specs = [];
@@ -1016,6 +1078,7 @@ function cardHTML(p, i, total) {
   const hidCls  = p.hidden ? 'is-hidden' : '';
   const visLbl  = p.hidden ? 'Hidden' : 'Visible';
   const visCls  = p.hidden ? '' : 'adm-vis-on';
+  const secondCat = secondaryCategory(p);
 
   return `
 <div class="adm-card ${hidCls}" data-id="${p.id}">
@@ -1056,20 +1119,24 @@ function cardHTML(p, i, total) {
         <div class="adm-fgroup">
           <label>Category</label>
           <select class="adm-fi fi-cat fi-md">
-            ${['Shirts','Short-Sleeve','Trousers','Shorts','Knitwear','Jackets','Accessories'].map(c =>
-              `<option value="${c}"${p.cat === c ? ' selected' : ''}>${c}</option>`
-            ).join('')}
+            ${categoryOptionsHTML(p.cat)}
+          </select>
+        </div>
+        <div class="adm-fgroup">
+          <label>Second Category</label>
+          <select class="adm-fi fi-cat-secondary fi-md">
+            ${categoryOptionsHTML(secondCat, true)}
           </select>
         </div>
       </div>
       <div class="adm-fields-row">
         <div class="adm-fgroup">
-          <label>Price</label>
+          <label>Regular Price</label>
           <input class="adm-fi fi-price fi-sm" value="${esc(p.price)}" />
         </div>
         <div class="adm-fgroup">
           <label>Sale Price</label>
-          <input class="adm-fi fi-old fi-sm" value="${esc(p.priceOld || '')}" placeholder="—" />
+          <input class="adm-fi fi-old fi-sm" value="${esc(p.priceOld || '')}" placeholder="e.g. €155" />
         </div>
         <div class="adm-fgroup">
           <label>Badge</label>
@@ -1126,9 +1193,9 @@ function cardHTML(p, i, total) {
         <div class="adm-section-title">Filter Tags &amp; Colours</div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px 36px;align-items:start">
           <div class="adm-fgroup">
-            <label>Filter tags (space-separated)</label>
-            <input class="adm-fi fi-cats" value="${esc(p.cats)}" placeholder="e.g. shirts new" />
-            <span style="font-size:9px;color:var(--taupe);margin-top:4px">Used by the category filter buttons on the store</span>
+            <label>Extra filter tags (space-separated)</label>
+            <input class="adm-fi fi-cats" value="${esc(extraFilterTags(p))}" placeholder="e.g. new sale" />
+            <span style="font-size:9px;color:var(--taupe);margin-top:4px">Primary and second category tags are added automatically.</span>
           </div>
           <div>
             <label style="font-size:7px;letter-spacing:0.2em;text-transform:uppercase;color:var(--label-color);font-weight:500;display:block;margin-bottom:5px">Colour options</label>
@@ -1216,6 +1283,7 @@ function addProduct() {
   document.getElementById('np-old').value   = '';
   document.getElementById('np-badge').value = '';
   document.getElementById('np-cat').value   = 'Shirts';
+  document.getElementById('np-cat-secondary').value = '';
   const zone = document.getElementById('np-img-zone');
   zone.classList.remove('has-img');
   zone.querySelector('img')?.remove();
@@ -1256,7 +1324,7 @@ document.getElementById('np-img-file').addEventListener('change', async function
 
 function submitNewProduct() {
   const name  = document.getElementById('np-name').value.trim();
-  const price = document.getElementById('np-price').value.trim();
+  const price = normalizePrice(document.getElementById('np-price').value);
   let valid = true;
 
   // validate
@@ -1283,7 +1351,8 @@ function submitNewProduct() {
   if (!valid) return;
 
   const cat    = document.getElementById('np-cat').value;
-  const old    = document.getElementById('np-old').value.trim();
+  const secondCat = document.getElementById('np-cat-secondary').value;
+  const old    = normalizePrice(document.getElementById('np-old').value);
   const badge  = document.getElementById('np-badge').value.trim();
 
   // all good — confirm
@@ -1291,13 +1360,14 @@ function submitNewProduct() {
   openDialog({
     icon: '✓',
     title: `Add "${name}" to the collection?`,
-    msg: `${cat} · ${price}${old ? ' (was ' + old + ')' : ''}${badge ? ' · ' + badge : ''}`,
+    msg: `${cat}${secondCat ? ' + ' + secondCat : ''} · ${price}${old ? ' · sale ' + old : ''}${badge ? ' · ' + badge : ''}`,
     confirmLabel: 'Add to Collection',
     onConfirm: () => {
       collect();
       const newId  = products.length ? Math.max(...products.map(p => p.id)) + 1 : 0;
       const maxOrd = products.length ? Math.max(...products.map(p => p.order)) + 1 : 0;
-      const catTag = cat.toLowerCase().replace(/[^a-z]/g, '');
+      const extraTags = badge.toLowerCase().includes('new') ? 'new' : '';
+      const catTag = composeFilterTags(cat, secondCat, extraTags);
       products.push({
         id: newId, order: maxOrd, hidden: false,
         name, cat, cats: catTag,

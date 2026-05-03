@@ -7,6 +7,13 @@ const VALID_CATS = new Set([
   'Shirts','Short-Sleeve','Trousers','Shorts','Knitwear','Jackets','Accessories',
 ]);
 
+function normalizePrice(value: unknown): string {
+  const price = String(value ?? '').trim().slice(0, 30);
+  if (!price) return '';
+  if (price.startsWith('€')) return price;
+  return price.replace(/^[£$]/, '€').replace(/^(?!€)/, '€');
+}
+
 /** Strip to known fields and basic types — no arbitrary keys reach MongoDB */
 function sanitizeProduct(raw: any): Record<string, unknown> | null {
   if (typeof raw !== 'object' || raw === null) return null;
@@ -52,8 +59,8 @@ function sanitizeProduct(raw: any): Record<string, unknown> | null {
     name,
     cat,
     cats:     String(raw.cats     ?? '').slice(0, 200),
-    price:    String(raw.price    ?? '').slice(0, 30),
-    priceOld: String(raw.priceOld ?? '').slice(0, 30),
+    price:    normalizePrice(raw.price),
+    priceOld: normalizePrice(raw.priceOld),
     badge:    String(raw.badge    ?? '').slice(0, 50),
     img:      String(raw.img      ?? '').slice(0, 500),
     images,

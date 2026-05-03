@@ -64,6 +64,41 @@ function esc(s) {
     .replace(/>/g, '&gt;');
 }
 
+function displayCategory(p) {
+  const tags = (p.cats ?? '').split(/\s+/).filter(Boolean);
+  const labels = [];
+
+  if (tags.includes('shirts')) labels.push('Shirts');
+  if (tags.includes('shortsleeve')) labels.push('Short-Sleeve');
+  if (tags.includes('trousers')) labels.push('Trousers');
+  if (tags.includes('shorts')) labels.push('Shorts');
+
+  return labels.length > 1 ? labels.join(' · ') : (p.cat ?? '');
+}
+
+function displayPrice(value) {
+  const price = String(value ?? '').trim();
+  if (!price) return '';
+  if (price.startsWith('€')) return price;
+  return price.replace(/^[£$]/, '€').replace(/^(?!€)/, '€');
+}
+
+function cardPriceHTML(p) {
+  if (p.priceOld) {
+    return `<span class="prod-price prod-price-sale">${esc(displayPrice(p.priceOld))}</span><span class="prod-price-old">${esc(displayPrice(p.price))}</span>`;
+  }
+
+  return `<span class="prod-price">${esc(displayPrice(p.price))}</span>`;
+}
+
+function modalPriceHTML(p) {
+  if (p.priceOld) {
+    return `<span class="m-price-sale">${esc(displayPrice(p.priceOld))}</span><span class="m-price-old">${esc(displayPrice(p.price))}</span>`;
+  }
+
+  return esc(displayPrice(p.price));
+}
+
 /* ─── RENDER PRODUCT GRID ──────────────────────────────────────── */
 function renderProductGrid() {
   const grid = document.getElementById('products-grid');
@@ -75,7 +110,6 @@ function renderProductGrid() {
 
   grid.innerHTML = visible.map((p, i) => {
     const badge = p.badge ? `<span class="prod-badge">${esc(p.badge)}</span>` : '';
-    const priceOld = p.priceOld ? `<span class="prod-price-old">${esc(p.priceOld)}</span>` : '';
     const colors = (p.colors ?? []).map((c, ci) =>
       `<span class="color-dot${ci === 0 ? ' active' : ''}" style="background:${esc(c.bg)};" title="${esc(c.title)}"></span>`
     ).join('');
@@ -89,11 +123,10 @@ function renderProductGrid() {
           <button class="prod-quick" onclick="event.stopPropagation();openModal(${p.id})">Quick View</button>
         </div>
         <div class="prod-info">
-          <p class="prod-cat">${esc(p.cat)}</p>
+          <p class="prod-cat">${esc(displayCategory(p))}</p>
           <h3 class="prod-name">${esc(p.name)}</h3>
           <div class="prod-price-row">
-            <span class="prod-price">${esc(p.price)}</span>
-            ${priceOld}
+            ${cardPriceHTML(p)}
           </div>
         </div>
       </article>`;
@@ -130,22 +163,62 @@ function renderPage() {
 
 function renderPagination(total) {
   const container = document.getElementById('pagination');
-  if (total <= 1) { container.innerHTML = ''; return; }
-  const prevDisabled = currentPage === 1 ? ' disabled' : '';
-  const nextDisabled = currentPage === total ? ' disabled' : '';
-  let html = `<button class="page-btn page-arrow" onclick="changePage(${currentPage - 1})"${prevDisabled} aria-label="Previous">‹</button>`;
-  for (let i = 1; i <= total; i++) {
-    html += `<button class="page-btn${i === currentPage ? ' active' : ''}" onclick="changePage(${i})">${i}</button>`;
+  if (!container) return;
+
+  if (total <= 1) {
+    container.innerHTML = '';
+    container.dataset.total = '0';
+    return;
   }
-  html += `<button class="page-btn page-arrow" onclick="changePage(${currentPage + 1})"${nextDisabled} aria-label="Next">›</button>`;
-  container.innerHTML = html;
+
+  if (container.dataset.total !== String(total)) {
+    let html = `<button type="button" class="page-btn page-arrow" data-pagination="prev" aria-label="Previous">‹</button>`;
+    for (let i = 1; i <= total; i++) {
+      html += `<button type="button" class="page-btn" data-page="${i}">${i}</button>`;
+    }
+    html += `<button type="button" class="page-btn page-arrow" data-pagination="next" aria-label="Next">›</button>`;
+    container.innerHTML = html;
+    container.dataset.total = String(total);
+  }
+
+  const prev = container.querySelector('[data-pagination="prev"]');
+  const next = container.querySelector('[data-pagination="next"]');
+
+  if (prev) {
+    prev.disabled = currentPage === 1;
+    prev.onclick = event => window.changePage(currentPage - 1, event);
+  }
+
+  if (next) {
+    next.disabled = currentPage === total;
+    next.onclick = event => window.changePage(currentPage + 1, event);
+  }
+
+  container.querySelectorAll('[data-page]').forEach(btn => {
+    const page = Number(btn.dataset.page);
+    btn.classList.toggle('active', page === currentPage);
+    btn.onclick = event => window.changePage(page, event);
+  });
 }
 
-window.changePage = function(page) {
-  const y = window.scrollY;
-  currentPage = page;
+function scrollToFirstPageProduct() {
+  const firstProduct = document.querySelector('#products-grid .product-card[data-hidden="false"]');
+  if (!firstProduct) return;
+
+  const top = firstProduct.getBoundingClientRect().top + window.scrollY - getStickyOffset() - 20;
+  window.scroll({ top, behavior: 'smooth' });
+}
+
+window.changePage = function(page, event) {
+  event?.preventDefault();
+  const cards = getFilteredCards();
+  const total = Math.ceil(cards.length / PER_PAGE) || 1;
+  const nextPage = Math.min(Math.max(page, 1), total);
+  if (nextPage === currentPage) return;
+
+  currentPage = nextPage;
   renderPage();
-  window.scrollTo({ top: y, behavior: 'instant' });
+  requestAnimationFrame(scrollToFirstPageProduct);
 };
 
 /* ─── INIT ─────────────────────────────────────────────────────── */
@@ -237,12 +310,10 @@ window.openModal = function(id) {
     `<div class="spec-row"><div class="spec-k">${esc(k)}</div><div class="spec-v">${esc(v)}</div></div>`
   ).join('');
 
-  const oldHTML = p.priceOld ? `<span class="m-price-old">${esc(p.priceOld)}</span>` : '';
-
   body.innerHTML = `
-    <p class="m-kicker">${esc(p.cat)}</p>
+    <p class="m-kicker">${esc(displayCategory(p))}</p>
     <h2 class="m-title">${esc(p.name)}</h2>
-    <div class="m-price">${esc(p.price)} ${oldHTML}</div>
+    <div class="m-price">${modalPriceHTML(p)}</div>
     <div class="m-rule"></div>
     <p class="m-desc">${esc(p.desc)}</p>
     <p class="m-size-label">Available Sizes</p>
