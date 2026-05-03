@@ -611,8 +611,10 @@ footer { background: var(--charcoal); color: var(--ivory); padding: 72px 60px 44
   .hero-content { grid-template-columns: 1fr; padding: 0 40px 64px; }
   .hero-right { display: none; }
   .products-grid { grid-template-columns: repeat(2, 1fr); }
-  .nav { padding: 0 28px; display: flex; justify-content: space-between; }
+  .nav { padding: 0 28px; }
   .nav-left { display: none; }
+  .nav-logo { grid-column: 2; }
+  .nav-right { grid-column: 3; }
   .nav-icon { display: none; }
   .nav-hamburger { display: flex; }
   .nl-form { flex-direction: column; gap: 16px; align-items: center; }
