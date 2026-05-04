@@ -360,26 +360,12 @@ window.orderNow = function(id) {
   if (!p || !size) return;
   const message = `Hi! I'd like to order:\n${p.name} — Size ${size}`;
   navigator.clipboard.writeText(message).catch(() => {});
-
   const hint = document.getElementById(`order-hint-${id}`);
   if (hint) {
     hint.classList.add('show');
     setTimeout(() => hint.classList.remove('show'), 3000);
   }
-
-  // Try Instagram app first, fall back to web after 1500ms if app not installed
-  const appURL = 'instagram://user?username=mareno.ks';
-  const webURL = 'https://ig.me/m/mareno.ks';
-
-  const start = Date.now();
-  window.location.href = appURL;
-
-  setTimeout(() => {
-    // If page is still visible, the app didn't open — fall back to web
-    if (!document.hidden && Date.now() - start < 3000) {
-      window.open(webURL, '_blank');
-    }
-  }, 1500);
+  setTimeout(() => window.open('https://ig.me/m/mareno.ks', '_blank'), 400);
 };
 
 function showOrderToast(msg) {
