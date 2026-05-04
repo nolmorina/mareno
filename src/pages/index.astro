@@ -318,6 +318,10 @@ window.openModal = function(id) {
     <p class="m-desc">${esc(p.desc)}</p>
     <p class="m-size-label">Available Sizes</p>
     <div class="m-sizes" id="sizes-${id}">${sizesHTML}</div>
+    <div class="m-actions">
+      <button class="btn btn-dark m-order-btn" id="order-btn-${id}" onclick="orderNow(${id})" disabled>Select a size to order</button>
+      <p class="m-order-hint" id="order-hint-${id}">✓ Message copied — paste it in the Instagram chat</p>
+    </div>
     <div class="m-specs">${specsHTML}</div>
   `;
 
@@ -343,7 +347,39 @@ window.pickSize = function(id, s, el) {
   selectedSize[id] = s;
   document.getElementById(`sizes-${id}`)?.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
   el.classList.add('active');
+  const orderBtn = document.getElementById(`order-btn-${id}`);
+  if (orderBtn) {
+    orderBtn.disabled = false;
+    orderBtn.textContent = 'Order Now';
+  }
 };
+
+window.orderNow = function(id) {
+  const p = PRODUCTS.find(x => x.id === id);
+  const size = selectedSize[id];
+  if (!p || !size) return;
+  const message = `Hi! I'd like to order:\n${p.name} — Size ${size}`;
+  navigator.clipboard.writeText(message).catch(() => {});
+  const hint = document.getElementById(`order-hint-${id}`);
+  if (hint) {
+    hint.classList.add('show');
+    setTimeout(() => hint.classList.remove('show'), 3000);
+  }
+  setTimeout(() => window.open('https://ig.me/m/mareno.ks', '_blank'), 400);
+};
+
+function showOrderToast(msg) {
+  document.querySelectorAll('.order-toast').forEach(t => t.remove());
+  const toast = document.createElement('div');
+  toast.className = 'order-toast';
+  toast.textContent = msg;
+  document.body.appendChild(toast);
+  requestAnimationFrame(() => toast.classList.add('show'));
+  setTimeout(() => {
+    toast.classList.remove('show');
+    setTimeout(() => toast.remove(), 400);
+  }, 3500);
+}
 
 window.modalWishlist = function(id) {
   const btn = document.getElementById(`wish-btn-${id}`);
