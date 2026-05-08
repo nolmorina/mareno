@@ -42,7 +42,35 @@ const LogSchema = new Schema({
   ip:       { type: String, default: '' },
 }, { timestamps: true });
 
+/* ── Inventory ──────────────────────────────────────────────────── */
+const StockLineSchema = new Schema({
+  size: { type: String, required: true },
+  qty:  { type: Number, default: 0, min: 0 },
+}, { _id: false });
+
+const InventorySchema = new Schema({
+  productId:   { type: Number, required: true, unique: true },
+  productName: { type: String, default: '' },
+  stock:       [StockLineSchema],
+  lowStockAt:  { type: Number, default: 2 },
+}, { timestamps: true });
+
+/* ── Stock Log (append-only audit trail) ────────────────────────── */
+const StockLogSchema = new Schema({
+  productId:   { type: Number, required: true },
+  productName: { type: String, default: '' },
+  size:        { type: String, required: true },
+  delta:       { type: Number, required: true },
+  reason:      { type: String, enum: ['sale', 'restock', 'correction', 'return', 'damage'], default: 'correction' },
+  note:        { type: String, default: '', maxlength: 300 },
+  adminUser:   { type: String, default: '' },
+  qtyBefore:   { type: Number, default: 0 },
+  qtyAfter:    { type: Number, default: 0 },
+}, { timestamps: true });
+
 export const Product    = mongoose.models.Product    ?? mongoose.model('Product',    ProductSchema);
 export const Settings   = mongoose.models.Settings   ?? mongoose.model('Settings',   SettingsSchema);
 export const AdminUser  = mongoose.models.AdminUser  ?? mongoose.model('AdminUser',  AdminUserSchema);
 export const Log        = mongoose.models.Log        ?? mongoose.model('Log',        LogSchema);
+export const Inventory  = mongoose.models.Inventory  ?? mongoose.model('Inventory',  InventorySchema);
+export const StockLog   = mongoose.models.StockLog   ?? mongoose.model('StockLog',   StockLogSchema);

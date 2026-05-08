@@ -563,6 +563,250 @@ const currentUser = user.username;
     .adm-hd { padding: 0 18px; }
     .adm-hero-body { grid-template-columns: 1fr; }
   }
+
+  /* ── TAB NAVIGATION ──────────────────────────────────────────── */
+  .adm-tab-nav {
+    display: flex; gap: 0; margin-bottom: 32px;
+    border-bottom: 1px solid var(--border);
+  }
+  .adm-tab-btn {
+    font-size: 8px; letter-spacing: 0.2em; text-transform: uppercase;
+    background: none; border: none; border-bottom: 2px solid transparent;
+    padding: 12px 22px; color: var(--taupe); margin-bottom: -1px;
+    transition: all .18s; cursor: pointer; display: flex; align-items: center; gap: 7px;
+  }
+  .adm-tab-btn:hover { color: var(--ch); }
+  .adm-tab-btn.active { color: var(--ch); border-bottom-color: var(--ch); }
+  .adm-tab-badge {
+    font-size: 8px; font-weight: 500; letter-spacing: 0;
+    background: var(--danger); color: #fff;
+    min-width: 16px; height: 16px; border-radius: 8px;
+    display: inline-flex; align-items: center; justify-content: center;
+    padding: 0 4px; line-height: 1;
+  }
+
+  /* ── STOCK KPI ROW ───────────────────────────────────────────── */
+  .stk-kpi-row {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;
+    margin-bottom: 24px;
+  }
+  @media (max-width: 720px) { .stk-kpi-row { grid-template-columns: repeat(2, 1fr); } }
+  .stk-kpi {
+    background: var(--card); border: 1px solid var(--border);
+    padding: 16px 18px; display: flex; flex-direction: column; gap: 6px;
+  }
+  .stk-kpi-label {
+    font-size: 7px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--taupe);
+  }
+  .stk-kpi-value {
+    font-family: var(--serif); font-size: 30px; font-weight: 400; line-height: 1; color: var(--ch);
+  }
+  .stk-kpi-value.warn   { color: #8F6A30; }
+  .stk-kpi-value.danger { color: var(--danger); }
+
+  /* ── ALERT BANNERS ───────────────────────────────────────────── */
+  .stk-alert {
+    background: #FBF3E3; border: 1px solid #E8C97E;
+    padding: 11px 16px; margin-bottom: 10px;
+    display: flex; align-items: flex-start; gap: 10px;
+    font-size: 11px; font-weight: 300; line-height: 1.6; color: #6B4E1A;
+  }
+  .stk-alert-icon { font-size: 13px; flex-shrink: 0; margin-top: 1px; }
+  .stk-alert strong { font-weight: 500; }
+  .stk-alert.danger { background: #FBF0EE; border-color: #E8AAAA; color: #6B1A1A; }
+  #stk-alerts-wrap { margin-bottom: 4px; }
+
+  /* ── INVENTORY TABLE ─────────────────────────────────────────── */
+  .stk-table-wrap { overflow-x: auto; }
+  .stk-table {
+    width: 100%; border-collapse: collapse;
+    background: var(--card); border: 1px solid var(--border); font-size: 11px;
+  }
+  .stk-table th {
+    text-align: center; font-size: 7px; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--taupe); font-weight: 500; padding: 10px 14px;
+    border-bottom: 1px solid var(--border); background: #F5F4F0; white-space: nowrap;
+  }
+  .stk-table th:first-child { text-align: left; }
+  .stk-table th:last-child  { text-align: left; min-width: 110px; }
+  .stk-table td { padding: 0; border-bottom: 1px solid #EDEBE7; vertical-align: middle; }
+  .stk-table tr:last-child td { border-bottom: none; }
+  .stk-table tr:hover .stk-name-cell,
+  .stk-table tr:hover .stk-actions-cell { background: rgba(0,0,0,.012); }
+
+  .stk-img-cell {
+    width: 52px; min-width: 52px; padding: 0;
+    border-right: 1px solid #EDEBE7;
+  }
+  .stk-img-cell img {
+    width: 52px; height: 52px; object-fit: cover;
+    object-position: center top; display: block;
+  }
+  .stk-img-cell .stk-img-empty {
+    width: 52px; height: 52px; background: #E8E4DC;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; color: var(--border);
+  }
+  .stk-name-cell { padding: 11px 14px; }
+  .stk-prod-name { font-weight: 400; color: var(--ch); font-size: 12px; }
+  .stk-prod-cat  { font-size: 9px; color: var(--taupe); margin-top: 2px; letter-spacing: 0.06em; }
+
+  .stk-qty-cell {
+    min-width: 58px; text-align: center; padding: 10px 6px;
+    font-size: 14px; font-weight: 400; font-family: var(--serif);
+    border-left: 1px solid #EDEBE7; transition: background .12s;
+  }
+  .stk-qty-cell.good { background: #EBF3EB; color: #3A6A3A; }
+  .stk-qty-cell.low  { background: #FBF3E3; color: #8F6A30; }
+  .stk-qty-cell.oos  { background: #FBF0EE; color: var(--danger); font-weight: 500; }
+  .stk-qty-cell.na   { background: #F5F4F0; color: #CCC; font-size: 11px; }
+  .stk-qty-sub {
+    display: block; font-size: 7px; font-family: var(--sans);
+    letter-spacing: 0.08em; text-transform: uppercase; opacity: 0.7; margin-top: 2px;
+  }
+
+  .stk-actions-cell {
+    padding: 8px 12px; border-left: 1px solid var(--border);
+    min-width: 110px; width: 110px;
+  }
+  .stk-btn-restock {
+    font-size: 8px; letter-spacing: 0.16em; text-transform: uppercase;
+    background: none; border: 1px solid var(--border); color: var(--taupe);
+    padding: 7px 12px; width: 100%; transition: all .15s;
+  }
+  .stk-btn-restock:hover { border-color: var(--ch); color: var(--ch); background: #f0ede8; }
+
+  /* ── STOCK HISTORY ───────────────────────────────────────────── */
+  .stk-history-section { margin-top: 48px; }
+  .stk-log-table {
+    width: 100%; border-collapse: collapse;
+    font-size: 11px; background: var(--card); border: 1px solid var(--border);
+  }
+  .stk-log-table th {
+    text-align: left; font-size: 7px; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--taupe); font-weight: 500; padding: 10px 14px;
+    border-bottom: 1px solid var(--border); background: #F5F4F0; white-space: nowrap;
+  }
+  .stk-log-table td {
+    padding: 9px 14px; border-bottom: 1px solid #EDEBE7; vertical-align: top;
+  }
+  .stk-log-table tr:last-child td { border-bottom: none; }
+  .stk-log-table tr:hover td { background: #F9F8F6; }
+  .stk-delta-pos { color: #3A6A3A; font-weight: 500; font-family: var(--serif); }
+  .stk-delta-neg { color: var(--danger); font-weight: 500; font-family: var(--serif); }
+  .stk-reason-tag {
+    font-size: 7px; letter-spacing: 0.1em; text-transform: uppercase;
+    padding: 3px 7px; border: 1px solid; display: inline-block;
+  }
+  .stk-reason-tag.sale       { border-color: #E8AAAA; color: var(--danger);  background: #FBF0EE; }
+  .stk-reason-tag.restock    { border-color: #A8D4A8; color: #3A6A3A;        background: #EBF3EB; }
+  .stk-reason-tag.correction { border-color: var(--border); color: var(--taupe); background: #F5F4F0; }
+  .stk-reason-tag.return     { border-color: #A8C4D4; color: #2A5A7A;        background: #EBF0F3; }
+  .stk-reason-tag.damage     { border-color: #E8C97E; color: #8F6A30;        background: #FBF3E3; }
+  .stk-log-empty { text-align: center; padding: 28px; color: var(--taupe); font-size: 11px; }
+  .stk-log-paging {
+    display: flex; align-items: center; gap: 6px; margin-top: 12px; justify-content: flex-end;
+    font-size: 10px; color: var(--taupe);
+  }
+  .stk-log-paging button {
+    background: none; border: 1px solid var(--border); padding: 5px 10px;
+    font-size: 10px; color: var(--taupe); cursor: pointer; transition: all .15s;
+  }
+  .stk-log-paging button:hover:not(:disabled) { border-color: var(--ch); color: var(--ch); }
+  .stk-log-paging button:disabled { opacity: .3; cursor: default; }
+
+  /* ── SALE & RESTOCK MODALS ───────────────────────────────────── */
+  .stk-modal-overlay {
+    position: fixed; inset: 0; z-index: 920;
+    background: rgba(26,26,26,.52); backdrop-filter: blur(2px);
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0; pointer-events: none; transition: opacity .2s;
+  }
+  .stk-modal-overlay.open { opacity: 1; pointer-events: all; }
+  .stk-modal-panel {
+    background: var(--card); border: 1px solid var(--border);
+    width: 540px; max-width: 95vw; max-height: 90vh;
+    overflow-y: auto; display: flex; flex-direction: column;
+    transform: translateY(16px); transition: transform .28s cubic-bezier(.16,1,.3,1);
+  }
+  .stk-modal-overlay.open .stk-modal-panel { transform: translateY(0); }
+  .stk-modal-header {
+    padding: 24px 28px 18px; border-bottom: 1px solid var(--border);
+    display: flex; align-items: baseline; justify-content: space-between; flex-shrink: 0;
+  }
+  .stk-modal-heading { font-family: var(--serif); font-size: 24px; font-weight: 400; letter-spacing: 0.02em; }
+  .stk-modal-close {
+    background: none; border: none; font-size: 22px; color: var(--taupe);
+    line-height: 1; transition: color .15s; padding: 0; cursor: pointer;
+  }
+  .stk-modal-close:hover { color: var(--ch); }
+  .stk-modal-body { padding: 24px 28px; flex: 1; display: flex; flex-direction: column; gap: 20px; }
+  .stk-modal-footer {
+    padding: 18px 28px; border-top: 1px solid var(--border);
+    display: flex; gap: 8px; justify-content: flex-end; flex-shrink: 0; background: #F5F4F0;
+  }
+  .stk-modal-err {
+    font-size: 10px; color: var(--danger); background: #FBF0EE;
+    border: 1px solid #E8AAAA; padding: 8px 12px; display: none;
+  }
+  .stk-modal-err.show { display: block; }
+
+  /* Size picker (sale modal) */
+  .stk-size-picker { display: flex; gap: 8px; flex-wrap: wrap; }
+  .stk-sz-pick {
+    display: flex; flex-direction: column; align-items: center;
+    border: 1px solid var(--border); background: var(--input-bg);
+    padding: 9px 11px; min-width: 52px; cursor: pointer; transition: all .15s;
+    font-family: var(--sans);
+  }
+  .stk-sz-pick:hover:not(.oos) { border-color: var(--ch); }
+  .stk-sz-pick.selected { border-color: var(--ch); background: var(--ch); color: var(--iv); }
+  .stk-sz-pick.oos { opacity: .38; cursor: default; }
+  .stk-sz-pick .sz-lbl { font-size: 12px; font-weight: 400; line-height: 1; }
+  .stk-sz-pick .sz-qty { font-size: 8px; letter-spacing: 0.04em; margin-top: 4px; opacity: .6; line-height: 1; }
+  .stk-sz-pick.selected .sz-qty { opacity: .65; }
+
+  /* Qty stepper */
+  .stk-stepper { display: flex; align-items: center; width: fit-content; }
+  .stk-stepper button {
+    width: 38px; height: 38px; background: var(--ch); color: var(--iv);
+    border: none; font-size: 18px; line-height: 1;
+    display: flex; align-items: center; justify-content: center; transition: opacity .15s; cursor: pointer;
+  }
+  .stk-stepper button:hover { opacity: .78; }
+  .stk-stepper input {
+    width: 60px; height: 38px; text-align: center;
+    border: 1px solid var(--border); border-left: none; border-right: none;
+    font-family: var(--serif); font-size: 18px; color: var(--ch);
+    background: var(--input-bg); outline: none;
+  }
+
+  /* Restock grid */
+  .stk-restock-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); gap: 12px; }
+  .stk-rsi { display: flex; flex-direction: column; gap: 4px; align-items: center; }
+  .stk-rsi-label { font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--taupe); }
+  .stk-rsi-input {
+    font-family: var(--serif); font-size: 20px; text-align: center; width: 100%;
+    border: 1px solid var(--border); background: var(--input-bg);
+    padding: 9px 6px; outline: none; color: var(--ch); transition: border-color .18s;
+  }
+  .stk-rsi-input:focus { border-color: var(--border-focus); }
+  .stk-rsi-current { font-size: 8px; color: var(--taupe); text-align: center; }
+
+  /* Submit buttons (modal) */
+  .stk-btn-submit {
+    font-size: 8px; letter-spacing: 0.2em; text-transform: uppercase;
+    background: var(--ch); color: var(--iv); border: 1px solid var(--ch);
+    padding: 10px 24px; transition: opacity .15s; cursor: pointer;
+  }
+  .stk-btn-submit:hover:not(:disabled) { opacity: .78; }
+  .stk-btn-submit:disabled { opacity: .45; cursor: default; }
+  .stk-btn-cancel {
+    font-size: 8px; letter-spacing: 0.18em; text-transform: uppercase;
+    background: none; border: 1px solid var(--border); color: var(--taupe);
+    padding: 10px 20px; transition: all .15s; cursor: pointer;
+  }
+  .stk-btn-cancel:hover { border-color: var(--ch); color: var(--ch); }
 </style>
 
 <body>
@@ -578,6 +822,17 @@ const currentUser = user.username;
 </header>
 
 <main class="adm-main">
+
+  <nav class="adm-tab-nav">
+    <button class="adm-tab-btn active" id="adm-tab-btn-products" onclick="switchTab('products')">Products</button>
+    <button class="adm-tab-btn" id="adm-tab-btn-stock" onclick="switchTab('stock')">
+      Stock <span class="adm-tab-badge" id="adm-tab-badge-stock" style="display:none"></span>
+    </button>
+    <button class="adm-tab-btn" id="adm-tab-btn-log" onclick="switchTab('log')">Activity Log</button>
+    <a href="/sales" class="adm-tab-btn" style="text-decoration:none">Sales</a>
+  </nav>
+
+  <div id="adm-tab-products" class="adm-tab-panel">
   <section class="adm-hero-card">
     <div class="adm-hero-head">
       <span class="adm-hero-title">Hero Image</span>
@@ -652,6 +907,94 @@ const currentUser = user.username;
   </div>
   <div class="adm-prod-list" id="prod-list"></div>
 
+  </div><!-- /adm-tab-products -->
+
+  <!-- ═══════════════════════════════════════════════════════════
+       STOCK TAB
+  ════════════════════════════════════════════════════════════ -->
+  <div id="adm-tab-stock" class="adm-tab-panel" style="display:none">
+
+    <!-- KPI summary -->
+    <div class="stk-kpi-row" id="stk-kpi-row">
+      <div class="stk-kpi"><div class="stk-kpi-label">Total Products</div><div class="stk-kpi-value" id="stk-kpi-products">—</div></div>
+      <div class="stk-kpi"><div class="stk-kpi-label">Total Units</div><div class="stk-kpi-value" id="stk-kpi-units">—</div></div>
+      <div class="stk-kpi"><div class="stk-kpi-label">Low Stock</div><div class="stk-kpi-value" id="stk-kpi-low">—</div></div>
+      <div class="stk-kpi"><div class="stk-kpi-label">Out of Stock</div><div class="stk-kpi-value" id="stk-kpi-oos">—</div></div>
+    </div>
+
+    <!-- Alert banners (rendered by JS) -->
+    <div id="stk-alerts-wrap"></div>
+
+    <!-- Toolbar -->
+    <div class="adm-toolbar">
+      <span class="adm-toolbar-label" id="stk-label">Inventory</span>
+      <button class="adm-btn-new" onclick="openSaleModal()">+ Record Sale</button>
+    </div>
+
+    <!-- Inventory table (headers + rows rendered by JS) -->
+    <div class="stk-table-wrap">
+      <table class="stk-table" id="stk-table">
+        <thead><tr id="stk-thead-row"><th colspan="20" style="text-align:center;padding:24px;color:var(--taupe)">Loading inventory…</th></tr></thead>
+        <tbody id="stk-tbody"></tbody>
+      </table>
+    </div>
+
+    <!-- Stock history -->
+    <div class="stk-history-section">
+      <div class="adm-toolbar" style="margin-bottom:12px">
+        <span class="adm-toolbar-label">Stock History</span>
+        <button class="adm-btn-subtle" onclick="loadStockLogs(1)">Refresh</button>
+      </div>
+      <div class="adm-log-filters">
+        <div class="adm-fgroup">
+          <label>Product</label>
+          <input class="adm-fi" id="stklog-f-product" placeholder="any" style="width:160px" />
+        </div>
+        <div class="adm-fgroup">
+          <label>Reason</label>
+          <select class="adm-fi" id="stklog-f-reason" style="width:130px">
+            <option value="">All</option>
+            <option value="sale">Sale</option>
+            <option value="restock">Restock</option>
+            <option value="correction">Correction</option>
+            <option value="return">Return</option>
+            <option value="damage">Damage</option>
+          </select>
+        </div>
+        <div class="adm-fgroup">
+          <label>From</label>
+          <input class="adm-fi" id="stklog-f-from" type="datetime-local" style="width:180px" />
+        </div>
+        <div class="adm-fgroup">
+          <label>To</label>
+          <input class="adm-fi" id="stklog-f-to" type="datetime-local" style="width:180px" />
+        </div>
+        <button class="adm-btn-new" onclick="loadStockLogs(1)" style="align-self:flex-end">Filter</button>
+        <button class="adm-btn-subtle" onclick="clearStkLogFilters()" style="align-self:flex-end">Clear</button>
+      </div>
+      <div style="overflow-x:auto">
+        <table class="stk-log-table">
+          <thead>
+            <tr>
+              <th>Time</th><th>Product</th><th>Size</th>
+              <th>Change</th><th>Reason</th><th>After</th>
+              <th>Admin</th><th>Note</th>
+            </tr>
+          </thead>
+          <tbody id="stk-log-tbody">
+            <tr><td colspan="8" class="stk-log-empty">Load the Stock tab to see history.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="stk-log-paging" id="stk-log-paging"></div>
+    </div>
+
+  </div><!-- /adm-tab-stock -->
+
+  <!-- ═══════════════════════════════════════════════════════════
+       LOG TAB
+  ════════════════════════════════════════════════════════════ -->
+  <div id="adm-tab-log" class="adm-tab-panel" style="display:none">
   <!-- Activity Log -->
   <section class="adm-log-section">
     <div class="adm-toolbar" style="margin-bottom:12px">
@@ -693,6 +1036,7 @@ const currentUser = user.username;
     </div>
     <div class="adm-log-paging" id="log-paging"></div>
   </section>
+  </div><!-- /adm-tab-log -->
 </main>
 
 <input type="file" id="img-file" accept="image/*" />
@@ -795,10 +1139,101 @@ const currentUser = user.username;
         <input class="adm-fi" id="np-badge" placeholder="e.g. New In" style="max-width:200px" />
       </div>
 
+      <div style="border-top:1px solid var(--border);margin:4px -28px;padding:0 28px"></div>
+
+      <!-- Sizes -->
+      <div class="adm-fgroup">
+        <label>Sizes <span style="font-size:9px;color:var(--taupe);letter-spacing:0;text-transform:none;font-weight:300">(comma separated)</span></label>
+        <input class="adm-fi" id="np-sizes" value="XS, S, M, L, XL" oninput="renderNpStockGrid()" style="max-width:320px" />
+      </div>
+
+      <!-- Initial stock grid -->
+      <div class="adm-fgroup">
+        <label>Initial Stock <span style="font-size:9px;color:var(--taupe);letter-spacing:0;text-transform:none;font-weight:300">(optional — 0 = unavailable on launch)</span></label>
+        <div class="stk-restock-grid" id="np-stock-grid"></div>
+      </div>
+
     </div>
     <div class="adm-np-footer">
       <button class="adm-np-cancel" onclick="closeNewProduct()">Cancel</button>
       <button class="adm-np-submit" onclick="submitNewProduct()">Add to Collection</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ SALE MODAL ══════════════════════════════════════════════ -->
+<div class="stk-modal-overlay" id="stk-sale-overlay" onclick="saleOverlayClick(event)">
+  <div class="stk-modal-panel">
+    <div class="stk-modal-header">
+      <div class="stk-modal-heading">Record a Sale</div>
+      <button class="stk-modal-close" onclick="closeSaleModal()">×</button>
+    </div>
+    <div class="stk-modal-body">
+
+      <div class="adm-fgroup">
+        <label>Product <span style="color:var(--danger)">*</span></label>
+        <select class="adm-fi" id="stk-sale-product" onchange="onSaleProductChange()">
+          <option value="">— Select a product —</option>
+        </select>
+      </div>
+
+      <div class="adm-fgroup">
+        <label>Size <span style="color:var(--danger)">*</span></label>
+        <div class="stk-size-picker" id="stk-sale-sizes">
+          <p style="font-size:11px;color:var(--taupe)">Select a product first.</p>
+        </div>
+      </div>
+
+      <div class="adm-fgroup">
+        <label>Quantity</label>
+        <div class="stk-stepper">
+          <button type="button" onclick="stkStepQty(-1)">−</button>
+          <input type="number" id="stk-sale-qty" value="1" min="1" max="999" />
+          <button type="button" onclick="stkStepQty(1)">+</button>
+        </div>
+      </div>
+
+      <div class="adm-fgroup">
+        <label>Note <span style="font-size:9px;color:var(--taupe);letter-spacing:0;text-transform:none;font-weight:300">(optional)</span></label>
+        <input class="adm-fi" id="stk-sale-note" placeholder="e.g. Order #42, Instagram DM" />
+      </div>
+
+      <div class="stk-modal-err" id="stk-sale-err"></div>
+    </div>
+    <div class="stk-modal-footer">
+      <button class="stk-btn-cancel" onclick="closeSaleModal()">Cancel</button>
+      <button class="stk-btn-submit" id="stk-sale-submit" onclick="submitSale()">Record Sale</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ RESTOCK MODAL ════════════════════════════════════════════ -->
+<div class="stk-modal-overlay" id="stk-restock-overlay" onclick="restockOverlayClick(event)">
+  <div class="stk-modal-panel">
+    <div class="stk-modal-header">
+      <div>
+        <div style="font-size:7px;letter-spacing:0.22em;text-transform:uppercase;color:var(--taupe);margin-bottom:6px">Restock</div>
+        <div class="stk-modal-heading" id="stk-restock-title"></div>
+      </div>
+      <button class="stk-modal-close" onclick="closeRestockModal()">×</button>
+    </div>
+    <div class="stk-modal-body">
+
+      <div class="adm-fgroup">
+        <label>Set stock quantities per size</label>
+        <div class="stk-restock-grid" id="stk-restock-grid"></div>
+      </div>
+
+      <div class="adm-fgroup">
+        <label>Note <span style="font-size:9px;color:var(--taupe);letter-spacing:0;text-transform:none;font-weight:300">(optional)</span></label>
+        <input class="adm-fi" id="stk-restock-note" placeholder="e.g. New shipment arrived" />
+      </div>
+
+      <div class="stk-modal-err" id="stk-restock-err"></div>
+    </div>
+    <div class="stk-modal-footer">
+      <button class="stk-btn-cancel" onclick="closeRestockModal()">Cancel</button>
+      <button class="stk-btn-submit" id="stk-restock-submit" onclick="submitRestock()">Save Stock</button>
     </div>
   </div>
 </div>
@@ -1035,6 +1470,18 @@ function saveAll() {
           apiFetch('/api/settings', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ key: 'editorial', value: editorial }) }),
           apiFetch('/api/products', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(products) }),
         ]);
+        // Flush any pending inventory from newly created products
+        const pendingEntries = Object.entries(npStockPending);
+        if (pendingEntries.length) {
+          await Promise.all(pendingEntries.map(([id, stock]) =>
+            apiFetch('/api/inventory', {
+              method: 'PUT',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ productId: parseInt(id), stock, note: 'Set at product creation' }),
+            })
+          ));
+          npStockPending = {};
+        }
         btn.textContent = 'Saved ✓'; btn.classList.add('ok');
         showToast('All changes saved to database');
         loadLogs(1);
@@ -1272,7 +1719,8 @@ function moveDown(id) {
 }
 
 /* ── ADD PRODUCT PANEL ─────────────────────────────────────────── */
-let npImg = ''; // stores URL of main product image
+let npImg          = ''; // stores URL of main product image
+let npStockPending = {}; // { productId: [{size, qty}] } — flushed on saveAll
 
 function addProduct() {
   // reset form
@@ -1288,6 +1736,8 @@ function addProduct() {
   zone.classList.remove('has-img');
   zone.querySelector('img')?.remove();
   document.getElementById('np-extra-imgs').innerHTML = '';
+  document.getElementById('np-sizes').value = 'XS, S, M, L, XL';
+  renderNpStockGrid();
   // clear errors
   ['np-err-img','np-err-name','np-err-price'].forEach(id => {
     document.getElementById(id).classList.remove('show');
@@ -1300,6 +1750,25 @@ function addProduct() {
 
 function closeNewProduct() {
   document.getElementById('np-overlay').classList.remove('open');
+}
+
+function renderNpStockGrid() {
+  const sizes = (document.getElementById('np-sizes')?.value ?? '')
+    .split(',').map(s => s.trim()).filter(Boolean);
+  const grid = document.getElementById('np-stock-grid');
+  if (!grid) return;
+  if (!sizes.length) {
+    grid.innerHTML = '<p style="font-size:11px;color:var(--taupe);margin-top:4px">Enter sizes above to set quantities.</p>';
+    return;
+  }
+  // Preserve existing values when list is edited
+  const prev = {};
+  grid.querySelectorAll('.stk-rsi-input').forEach(inp => { prev[inp.dataset.size] = inp.value; });
+  grid.innerHTML = sizes.map(s => `
+    <div class="stk-rsi">
+      <div class="stk-rsi-label">${esc(s)}</div>
+      <input class="stk-rsi-input" type="number" min="0" data-size="${esc(s)}" value="${prev[s] ?? 0}" />
+    </div>`).join('');
 }
 
 document.getElementById('np-img-file').addEventListener('change', async function () {
@@ -1350,10 +1819,18 @@ function submitNewProduct() {
   }
   if (!valid) return;
 
-  const cat    = document.getElementById('np-cat').value;
+  const cat       = document.getElementById('np-cat').value;
   const secondCat = document.getElementById('np-cat-secondary').value;
-  const old    = normalizePrice(document.getElementById('np-old').value);
-  const badge  = document.getElementById('np-badge').value.trim();
+  const old       = normalizePrice(document.getElementById('np-old').value);
+  const badge     = document.getElementById('np-badge').value.trim();
+
+  // Read sizes + stock before panel closes
+  const npSizesList = (document.getElementById('np-sizes')?.value ?? 'XS, S, M, L, XL')
+    .split(',').map(s => s.trim()).filter(Boolean);
+  const npStockData = [];
+  document.querySelectorAll('#np-stock-grid .stk-rsi-input').forEach(inp => {
+    npStockData.push({ size: inp.dataset.size, qty: Math.max(0, parseInt(inp.value) || 0) });
+  });
 
   // all good — confirm
   closeNewProduct();
@@ -1369,7 +1846,7 @@ function submitNewProduct() {
       const extraTags = badge.toLowerCase().includes('new') ? 'new' : '';
       const catTag = composeFilterTags(cat, secondCat, extraTags);
       products.push({
-        id: newId, order: maxOrd, hidden: false,
+        id: newId, order: maxOrd, hidden: true,
         name, cat, cats: catTag,
         price, priceOld: old, badge,
         img: npImg,
@@ -1377,8 +1854,12 @@ function submitNewProduct() {
         colors: [{ bg:'#DCCEB8', title:'Sand' }],
         desc: '',
         specs: [['Fabric',''],['Origin','Made in Portugal']],
-        sizes: ['XS','S','M','L','XL'], avail: ['S','M','L'],
+        sizes: npSizesList.length ? npSizesList : ['XS','S','M','L','XL'],
+        avail: npStockData.filter(s => s.qty > 0).map(s => s.size),
       });
+      if (npStockData.some(s => s.qty > 0)) {
+        npStockPending[newId] = npStockData;
+      }
       render();
       showToast('Product added');
       setTimeout(() => {
@@ -1645,6 +2126,440 @@ function clearLogFilters() {
 }
 
 load();
+
+/* ═══════════════════════════════════════════════════════════════
+   STOCK MANAGEMENT
+═══════════════════════════════════════════════════════════════ */
+
+let inventory = [];
+let stkLogPage = 1;
+
+/* ── TAB SWITCHING ──────────────────────────────────────────────── */
+function switchTab(tab) {
+  ['products','stock','log'].forEach(t => {
+    const panel = document.getElementById('adm-tab-' + t);
+    const btn   = document.getElementById('adm-tab-btn-' + t);
+    if (panel) panel.style.display = (t === tab) ? '' : 'none';
+    if (btn)   btn.classList.toggle('active', t === tab);
+  });
+  if (tab === 'stock') { loadInventory(); loadStockLogs(1); }
+  if (tab === 'log')   loadLogs(1);
+}
+
+/* ── LOAD INVENTORY ─────────────────────────────────────────────── */
+async function loadInventory() {
+  try {
+    const data = await apiFetch('/api/inventory');
+    inventory = Array.isArray(data) ? data : [];
+    renderStockTable();
+  } catch (err) {
+    showToast('Failed to load inventory: ' + err.message);
+  }
+}
+
+/* ── KPI CARDS ──────────────────────────────────────────────────── */
+function renderStockKPIs() {
+  let totalUnits = 0, oosCount = 0, lowCount = 0;
+
+  inventory.forEach(inv => {
+    let hasOOS = false, hasLow = false;
+    const stockMap = {};
+    (inv.stock || []).forEach(l => { stockMap[l.size] = l.qty; });
+    (inv.sizes || []).forEach(s => {
+      const qty = stockMap[s] ?? 0;
+      totalUnits += qty;
+      if (qty === 0) hasOOS = true;
+      else if (qty <= (inv.lowStockAt ?? 2)) hasLow = true;
+    });
+    if (hasOOS) oosCount++;
+    else if (hasLow) lowCount++;
+  });
+
+  const set = (id, val, cls) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.textContent = val;
+    el.className   = 'stk-kpi-value' + (cls ? ' ' + cls : '');
+  };
+
+  set('stk-kpi-products', inventory.length, '');
+  set('stk-kpi-units',    totalUnits, '');
+  set('stk-kpi-low',      lowCount, lowCount > 0 ? 'warn' : '');
+  set('stk-kpi-oos',      oosCount, oosCount > 0 ? 'danger' : '');
+
+  // Tab badge
+  const badge = document.getElementById('adm-tab-badge-stock');
+  const alertCount = oosCount + lowCount;
+  if (badge) {
+    badge.textContent = String(alertCount);
+    badge.style.display = alertCount > 0 ? '' : 'none';
+  }
+}
+
+/* ── ALERT BANNERS ──────────────────────────────────────────────── */
+function renderStockAlerts() {
+  const wrap = document.getElementById('stk-alerts-wrap');
+  if (!wrap) return;
+
+  const oosList = [], lowList = [];
+
+  inventory.forEach(inv => {
+    const stockMap = {};
+    (inv.stock || []).forEach(l => { stockMap[l.size] = l.qty; });
+    (inv.sizes || []).forEach(s => {
+      const qty = stockMap[s] ?? 0;
+      if (qty === 0) oosList.push(`${inv.productName} — ${s}`);
+      else if (qty <= (inv.lowStockAt ?? 2)) lowList.push(`${inv.productName} — ${s}: ${qty} left`);
+    });
+  });
+
+  let html = '';
+  if (oosList.length) {
+    const preview = oosList.slice(0, 6).map(s => esc(s)).join(' &middot; ');
+    const more    = oosList.length > 6 ? ` <em>+${oosList.length - 6} more</em>` : '';
+    html += `<div class="stk-alert danger"><span class="stk-alert-icon">!</span>
+      <span><strong>${oosList.length} size${oosList.length > 1 ? 's' : ''} out of stock:</strong> ${preview}${more}</span></div>`;
+  }
+  if (lowList.length) {
+    const preview = lowList.slice(0, 6).map(s => esc(s)).join(' &middot; ');
+    const more    = lowList.length > 6 ? ` <em>+${lowList.length - 6} more</em>` : '';
+    html += `<div class="stk-alert"><span class="stk-alert-icon">&#9651;</span>
+      <span><strong>${lowList.length} size${lowList.length > 1 ? 's' : ''} running low:</strong> ${preview}${more}</span></div>`;
+  }
+  wrap.innerHTML = html;
+}
+
+/* ── RENDER STOCK TABLE ─────────────────────────────────────────── */
+function renderStockTable() {
+  const label = document.getElementById('stk-label');
+  if (label) label.textContent = `Inventory (${inventory.length})`;
+
+  if (!inventory.length) {
+    const thead = document.getElementById('stk-thead-row');
+    const tbody = document.getElementById('stk-tbody');
+    if (thead) thead.innerHTML = '<th style="text-align:center;padding:24px;color:var(--taupe)">No products found</th>';
+    if (tbody) tbody.innerHTML = '';
+    renderStockKPIs();
+    renderStockAlerts();
+    return;
+  }
+
+  // Collect unique sizes in order of first appearance
+  const allSizes = [];
+  inventory.forEach(inv => {
+    (inv.sizes || []).forEach(s => {
+      if (!allSizes.includes(s)) allSizes.push(s);
+    });
+  });
+
+  const thead = document.getElementById('stk-thead-row');
+  if (thead) {
+    thead.innerHTML =
+      `<th style="width:52px;min-width:52px;padding:0"></th>` +
+      `<th style="text-align:left;min-width:180px">Product</th>` +
+      allSizes.map(s => `<th style="min-width:58px">${esc(s)}</th>`).join('') +
+      `<th style="text-align:left">Actions</th>`;
+  }
+
+  const tbody = document.getElementById('stk-tbody');
+  if (tbody) {
+    tbody.innerHTML = inventory.map(inv => {
+      const stockMap = {};
+      (inv.stock || []).forEach(l => { stockMap[l.size] = l.qty; });
+
+      const sizeCells = allSizes.map(s => {
+        if (!(inv.sizes || []).includes(s)) return `<td class="stk-qty-cell na">—</td>`;
+        const qty = stockMap[s] ?? 0;
+        const cls = qty === 0 ? 'oos' : qty <= (inv.lowStockAt ?? 2) ? 'low' : 'good';
+        const sub = qty === 0 ? 'OOS' : qty <= (inv.lowStockAt ?? 2) ? 'Low' : '';
+        return `<td class="stk-qty-cell ${cls}">${qty}${sub ? `<span class="stk-qty-sub">${sub}</span>` : ''}</td>`;
+      }).join('');
+
+      const imgCell = inv.img
+        ? `<td class="stk-img-cell"><img src="${esc(inv.img)}" alt="${esc(inv.productName)}" /></td>`
+        : `<td class="stk-img-cell"><div class="stk-img-empty">&#9634;</div></td>`;
+
+      return `<tr>
+        ${imgCell}
+        <td class="stk-name-cell">
+          <div class="stk-prod-name">${esc(inv.productName)}</div>
+          <div class="stk-prod-cat">${esc(inv.cat || '')}</div>
+        </td>
+        ${sizeCells}
+        <td class="stk-actions-cell">
+          <button class="stk-btn-restock" onclick="openRestockModal(${inv.productId})">Restock</button>
+        </td>
+      </tr>`;
+    }).join('');
+  }
+
+  renderStockKPIs();
+  renderStockAlerts();
+}
+
+/* ── SALE MODAL ─────────────────────────────────────────────────── */
+let saleSelectedProductId = null;
+let saleSelectedSize      = null;
+
+function openSaleModal() {
+  saleSelectedProductId = null;
+  saleSelectedSize      = null;
+
+  const sel = document.getElementById('stk-sale-product');
+  if (sel) {
+    sel.innerHTML = `<option value="">— Select a product —</option>` +
+      inventory.map(inv => `<option value="${inv.productId}">${esc(inv.productName)}</option>`).join('');
+    sel.value = '';
+  }
+
+  const qtyInp = document.getElementById('stk-sale-qty');
+  if (qtyInp) qtyInp.value = 1;
+  const noteInp = document.getElementById('stk-sale-note');
+  if (noteInp) noteInp.value = '';
+
+  clearSaleErr();
+  renderSaleSizes();
+  document.getElementById('stk-sale-overlay').classList.add('open');
+}
+
+function closeSaleModal() {
+  document.getElementById('stk-sale-overlay').classList.remove('open');
+}
+
+function saleOverlayClick(e) {
+  if (e.target === document.getElementById('stk-sale-overlay')) closeSaleModal();
+}
+
+function onSaleProductChange() {
+  saleSelectedProductId = parseInt(document.getElementById('stk-sale-product').value) || null;
+  saleSelectedSize = null;
+  clearSaleErr();
+  renderSaleSizes();
+}
+
+function renderSaleSizes() {
+  const wrap = document.getElementById('stk-sale-sizes');
+  if (!wrap) return;
+
+  if (!saleSelectedProductId) {
+    wrap.innerHTML = '<p style="font-size:11px;color:var(--taupe)">Select a product first.</p>';
+    return;
+  }
+  const inv = inventory.find(i => i.productId === saleSelectedProductId);
+  if (!inv || !(inv.sizes || []).length) {
+    wrap.innerHTML = '<p style="font-size:11px;color:var(--taupe)">No sizes defined for this product.</p>';
+    return;
+  }
+
+  const stockMap = {};
+  (inv.stock || []).forEach(l => { stockMap[l.size] = l.qty; });
+
+  wrap.innerHTML = (inv.sizes || []).map(s => {
+    const qty     = stockMap[s] ?? 0;
+    const oos     = qty === 0;
+    const selCls  = saleSelectedSize === s ? ' selected' : '';
+    const oosCls  = oos ? ' oos' : '';
+    const onclick = oos ? '' : `onclick="pickSaleSize('${esc(s)}',this)"`;
+    return `<button class="stk-sz-pick${oosCls}${selCls}" ${onclick} ${oos ? 'disabled' : ''} type="button">
+      <span class="sz-lbl">${esc(s)}</span>
+      <span class="sz-qty">${oos ? 'OOS' : qty + ' left'}</span>
+    </button>`;
+  }).join('');
+}
+
+function pickSaleSize(s, el) {
+  saleSelectedSize = s;
+  document.querySelectorAll('#stk-sale-sizes .stk-sz-pick').forEach(b => b.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+function stkStepQty(delta) {
+  const inp = document.getElementById('stk-sale-qty');
+  inp.value = Math.max(1, (parseInt(inp.value) || 1) + delta);
+}
+
+function clearSaleErr() {
+  const el = document.getElementById('stk-sale-err');
+  if (el) { el.textContent = ''; el.classList.remove('show'); }
+}
+
+function showSaleErr(msg) {
+  const el = document.getElementById('stk-sale-err');
+  if (el) { el.textContent = msg; el.classList.add('show'); }
+}
+
+async function submitSale() {
+  clearSaleErr();
+  if (!saleSelectedProductId) { showSaleErr('Please select a product.'); return; }
+  if (!saleSelectedSize)      { showSaleErr('Please select a size.'); return; }
+
+  const qty  = Math.max(1, parseInt(document.getElementById('stk-sale-qty').value) || 1);
+  const note = document.getElementById('stk-sale-note').value.trim();
+
+  const btn = document.getElementById('stk-sale-submit');
+  btn.disabled = true; btn.textContent = 'Recording…';
+
+  try {
+    await apiFetch('/api/inventory/sale', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ productId: saleSelectedProductId, size: saleSelectedSize, qty, note }),
+    });
+    closeSaleModal();
+    showToast('Sale recorded');
+    loadInventory();
+    loadStockLogs(1);
+  } catch (err) {
+    showSaleErr('Error: ' + err.message);
+  } finally {
+    btn.disabled = false; btn.textContent = 'Record Sale';
+  }
+}
+
+/* ── RESTOCK MODAL ──────────────────────────────────────────────── */
+let restockProductId = null;
+
+function openRestockModal(productId) {
+  restockProductId = productId;
+  const inv = inventory.find(i => i.productId === productId);
+  if (!inv) return;
+
+  const titleEl = document.getElementById('stk-restock-title');
+  if (titleEl) titleEl.textContent = inv.productName;
+
+  const stockMap = {};
+  (inv.stock || []).forEach(l => { stockMap[l.size] = l.qty; });
+
+  const grid = document.getElementById('stk-restock-grid');
+  if (grid) {
+    grid.innerHTML = (inv.sizes || []).map(s => {
+      const current = stockMap[s] ?? 0;
+      return `<div class="stk-rsi">
+        <div class="stk-rsi-label">${esc(s)}</div>
+        <input class="stk-rsi-input" type="number" min="0" data-size="${esc(s)}" value="${current}" />
+        <div class="stk-rsi-current">was ${current}</div>
+      </div>`;
+    }).join('');
+  }
+
+  const noteInp = document.getElementById('stk-restock-note');
+  if (noteInp) noteInp.value = '';
+  const errEl = document.getElementById('stk-restock-err');
+  if (errEl) { errEl.textContent = ''; errEl.classList.remove('show'); }
+
+  document.getElementById('stk-restock-overlay').classList.add('open');
+}
+
+function closeRestockModal() {
+  document.getElementById('stk-restock-overlay').classList.remove('open');
+}
+
+function restockOverlayClick(e) {
+  if (e.target === document.getElementById('stk-restock-overlay')) closeRestockModal();
+}
+
+async function submitRestock() {
+  const errEl = document.getElementById('stk-restock-err');
+  if (errEl) { errEl.textContent = ''; errEl.classList.remove('show'); }
+
+  const stock = [];
+  document.querySelectorAll('#stk-restock-grid .stk-rsi-input').forEach(inp => {
+    stock.push({ size: inp.dataset.size, qty: Math.max(0, parseInt(inp.value) || 0) });
+  });
+
+  const note = document.getElementById('stk-restock-note').value.trim();
+  const btn  = document.getElementById('stk-restock-submit');
+  btn.disabled = true; btn.textContent = 'Saving…';
+
+  try {
+    await apiFetch('/api/inventory', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ productId: restockProductId, stock, note }),
+    });
+    closeRestockModal();
+    showToast('Stock updated');
+    loadInventory();
+    loadStockLogs(1);
+  } catch (err) {
+    if (errEl) { errEl.textContent = 'Error: ' + err.message; errEl.classList.add('show'); }
+  } finally {
+    btn.disabled = false; btn.textContent = 'Save Stock';
+  }
+}
+
+/* ── STOCK HISTORY ──────────────────────────────────────────────── */
+async function loadStockLogs(page) {
+  stkLogPage = page ?? 1;
+  const product = document.getElementById('stklog-f-product')?.value.trim() ?? '';
+  const reason  = document.getElementById('stklog-f-reason')?.value ?? '';
+  const from    = document.getElementById('stklog-f-from')?.value ?? '';
+  const to      = document.getElementById('stklog-f-to')?.value ?? '';
+
+  const params = new URLSearchParams({ page: stkLogPage, limit: 20 });
+  if (product) params.set('product', product);
+  if (reason)  params.set('reason', reason);
+  if (from)    params.set('from', new Date(from).toISOString());
+  if (to)      params.set('to',   new Date(to).toISOString());
+
+  const tbody = document.getElementById('stk-log-tbody');
+  if (tbody) tbody.innerHTML = '<tr><td colspan="8" class="stk-log-empty">Loading…</td></tr>';
+
+  try {
+    const { logs, total, limit } = await apiFetch('/api/inventory/logs?' + params.toString());
+    if (!logs.length) {
+      tbody.innerHTML = '<tr><td colspan="8" class="stk-log-empty">No stock movements found.</td></tr>';
+    } else {
+      tbody.innerHTML = logs.map(l => {
+        const pos = l.delta > 0;
+        const deltaStr = (pos ? '+' : '') + l.delta;
+        const deltaCls = pos ? 'stk-delta-pos' : 'stk-delta-neg';
+        return `<tr>
+          <td style="white-space:nowrap;color:var(--taupe);font-size:10px">${new Date(l.createdAt).toLocaleString()}</td>
+          <td>${esc(l.productName)}</td>
+          <td style="font-weight:500;letter-spacing:0.06em">${esc(l.size)}</td>
+          <td class="${deltaCls}">${esc(deltaStr)}</td>
+          <td><span class="stk-reason-tag ${esc(l.reason)}">${esc(l.reason)}</span></td>
+          <td style="font-family:var(--serif);font-size:13px">${l.qtyAfter}</td>
+          <td style="color:var(--accent);font-weight:500">${esc(l.adminUser)}</td>
+          <td style="color:rgba(26,26,26,.45);font-weight:300">${esc(l.note || '—')}</td>
+        </tr>`;
+      }).join('');
+    }
+    renderStkLogPaging(total, limit);
+  } catch (err) {
+    if (tbody) tbody.innerHTML = `<tr><td colspan="8" class="stk-log-empty">Error: ${esc(err.message)}</td></tr>`;
+  }
+}
+
+function renderStkLogPaging(total, limit) {
+  const pages  = Math.ceil(total / limit) || 1;
+  const paging = document.getElementById('stk-log-paging');
+  if (!paging) return;
+  if (pages <= 1) {
+    paging.innerHTML = `<span style="font-size:10px;color:var(--taupe)">${total} entries</span>`;
+    return;
+  }
+  paging.innerHTML =
+    `<button onclick="loadStockLogs(${stkLogPage - 1})" ${stkLogPage <= 1 ? 'disabled' : ''}>‹</button>
+     <span style="padding:0 6px;font-size:10px;color:var(--taupe)">Page ${stkLogPage} / ${pages} · ${total} entries</span>
+     <button onclick="loadStockLogs(${stkLogPage + 1})" ${stkLogPage >= pages ? 'disabled' : ''}>›</button>`;
+}
+
+function clearStkLogFilters() {
+  ['stklog-f-product','stklog-f-reason','stklog-f-from','stklog-f-to'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  loadStockLogs(1);
+}
+
+// Close stock modals on Escape
+document.addEventListener('keydown', e => {
+  if (e.key !== 'Escape') return;
+  if (document.getElementById('stk-sale-overlay')?.classList.contains('open'))    closeSaleModal();
+  if (document.getElementById('stk-restock-overlay')?.classList.contains('open')) closeRestockModal();
+});
 </script>
 </body>
 </html>
