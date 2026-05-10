@@ -837,8 +837,8 @@ async function loadSalesTable(page) {
         <td class="sl-note-cell">${esc(l.note || '—')}</td>
         <td>
           <div style="display:flex;gap:4px">
-            <button class="sl-act-btn" onclick="openEditModal(${JSON.stringify(l._id)},${qty},${JSON.stringify(l.note||'')},${JSON.stringify(l.productName)},${JSON.stringify(l.size)})">Edit</button>
-            <button class="sl-act-btn sl-act-del" onclick="deleteSale(${JSON.stringify(l._id)},${JSON.stringify(l.productName)},${JSON.stringify(l.size)})">Del</button>
+            <button class="sl-act-btn" onclick="openEditModal(${esc(JSON.stringify(String(l._id)))},${qty},${esc(JSON.stringify(l.note||''))},${esc(JSON.stringify(l.productName))},${esc(JSON.stringify(l.size))})">Edit</button>
+            <button class="sl-act-btn sl-act-del" onclick="deleteSale(${esc(JSON.stringify(String(l._id)))},${esc(JSON.stringify(l.productName))},${esc(JSON.stringify(l.size))})">Del</button>
           </div>
         </td>
       </tr>`;

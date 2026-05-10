@@ -2609,8 +2609,8 @@ async function loadStockLogs(page) {
         const deltaCls = pos ? 'stk-delta-pos' : 'stk-delta-neg';
         const actions = l.reason === 'sale'
           ? `<div style="display:flex;gap:4px">
-               <button class="stk-act-btn" onclick="openEditSaleModal(${JSON.stringify(l._id)},${Math.abs(l.delta)},${JSON.stringify(l.note||'')})">Edit</button>
-               <button class="stk-act-btn stk-act-del" onclick="deleteSaleLog(${JSON.stringify(l._id)},${JSON.stringify(l.productName)},${JSON.stringify(l.size)})">Del</button>
+               <button class="stk-act-btn" onclick="openEditSaleModal(${esc(JSON.stringify(String(l._id)))},${Math.abs(l.delta)},${esc(JSON.stringify(l.note||''))})">Edit</button>
+               <button class="stk-act-btn stk-act-del" onclick="deleteSaleLog(${esc(JSON.stringify(String(l._id)))},${esc(JSON.stringify(l.productName))},${esc(JSON.stringify(l.size))})">Del</button>
              </div>`
           : '';
         return `<tr>
