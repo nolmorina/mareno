@@ -676,6 +676,15 @@ const currentUser = user.username;
   }
   .stk-btn-restock:hover { border-color: var(--ch); color: var(--ch); background: #f0ede8; }
 
+  /* ── LOG ACTION BUTTONS ──────────────────────────────────────── */
+  .stk-act-btn {
+    font-family: var(--sans); font-size: 8px; letter-spacing: 0.14em; text-transform: uppercase;
+    padding: 3px 7px; border: 1px solid var(--border); background: transparent;
+    color: var(--taupe); cursor: pointer; border-radius: 2px; transition: all .15s;
+  }
+  .stk-act-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .stk-act-del:hover { border-color: #c0392b; color: #c0392b; }
+
   /* ── STOCK HISTORY ───────────────────────────────────────────── */
   .stk-history-section { margin-top: 48px; }
   .stk-log-table {
@@ -978,11 +987,11 @@ const currentUser = user.username;
             <tr>
               <th>Time</th><th>Product</th><th>Size</th>
               <th>Change</th><th>Reason</th><th>After</th>
-              <th>Admin</th><th>Note</th>
+              <th>Admin</th><th>Note</th><th></th>
             </tr>
           </thead>
           <tbody id="stk-log-tbody">
-            <tr><td colspan="8" class="stk-log-empty">Load the Stock tab to see history.</td></tr>
+            <tr><td colspan="9" class="stk-log-empty">Load the Stock tab to see history.</td></tr>
           </tbody>
         </table>
       </div>
@@ -1203,6 +1212,32 @@ const currentUser = user.username;
     <div class="stk-modal-footer">
       <button class="stk-btn-cancel" onclick="closeSaleModal()">Cancel</button>
       <button class="stk-btn-submit" id="stk-sale-submit" onclick="submitSale()">Record Sale</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ EDIT SALE MODAL ═════════════════════════════════════════ -->
+<div class="stk-modal-overlay" id="stk-editsale-overlay" onclick="editSaleOverlayClick(event)">
+  <div class="stk-modal-panel">
+    <div class="stk-modal-header">
+      <div class="stk-modal-heading">Edit Sale</div>
+      <button class="stk-modal-close" onclick="closeEditSaleModal()">×</button>
+    </div>
+    <div class="stk-modal-body">
+      <input type="hidden" id="stk-editsale-id" />
+      <div class="stk-modal-field">
+        <label class="stk-modal-label">Qty Sold</label>
+        <input class="adm-fi" id="stk-editsale-qty" type="number" min="1" value="1" style="width:100px" />
+      </div>
+      <div class="stk-modal-field">
+        <label class="stk-modal-label">Note</label>
+        <input class="adm-fi" id="stk-editsale-note" type="text" maxlength="300" placeholder="Optional note…" style="width:100%" />
+      </div>
+      <div class="stk-modal-err" id="stk-editsale-err"></div>
+    </div>
+    <div class="stk-modal-footer">
+      <button class="stk-btn-cancel" onclick="closeEditSaleModal()">Cancel</button>
+      <button class="stk-btn-submit" id="stk-editsale-submit" onclick="submitEditSale()">Save Changes</button>
     </div>
   </div>
 </div>
@@ -2330,6 +2365,64 @@ function saleOverlayClick(e) {
   if (e.target === document.getElementById('stk-sale-overlay')) closeSaleModal();
 }
 
+/* ── EDIT SALE ──────────────────────────────────────────────────── */
+function openEditSaleModal(id, qty, note) {
+  document.getElementById('stk-editsale-id').value   = id;
+  document.getElementById('stk-editsale-qty').value  = qty;
+  document.getElementById('stk-editsale-note').value = note;
+  const errEl = document.getElementById('stk-editsale-err');
+  if (errEl) { errEl.textContent = ''; errEl.classList.remove('show'); }
+  document.getElementById('stk-editsale-overlay').classList.add('open');
+}
+
+function closeEditSaleModal() {
+  document.getElementById('stk-editsale-overlay').classList.remove('open');
+}
+
+function editSaleOverlayClick(e) {
+  if (e.target === document.getElementById('stk-editsale-overlay')) closeEditSaleModal();
+}
+
+async function submitEditSale() {
+  const id   = document.getElementById('stk-editsale-id').value;
+  const qty  = Math.max(1, parseInt(document.getElementById('stk-editsale-qty').value) || 1);
+  const note = document.getElementById('stk-editsale-note').value.trim();
+  const errEl = document.getElementById('stk-editsale-err');
+  const btn   = document.getElementById('stk-editsale-submit');
+  btn.disabled = true; btn.textContent = 'Saving…';
+  try {
+    await apiFetch('/api/inventory/sale', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id, qty, note }),
+    });
+    closeEditSaleModal();
+    showToast('Sale updated');
+    loadInventory();
+    loadStockLogs(stkLogPage);
+  } catch (err) {
+    if (errEl) { errEl.textContent = 'Error: ' + err.message; errEl.classList.add('show'); }
+  } finally {
+    btn.disabled = false; btn.textContent = 'Save Changes';
+  }
+}
+
+async function deleteSaleLog(id, productName, size) {
+  if (!confirm(`Delete this sale entry for "${productName}" (${size})?\nStock will be restored.`)) return;
+  try {
+    await apiFetch('/api/inventory/sale', {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id }),
+    });
+    showToast('Sale deleted — stock restored');
+    loadInventory();
+    loadStockLogs(stkLogPage);
+  } catch (err) {
+    alert('Error: ' + err.message);
+  }
+}
+
 function onSaleProductChange() {
   saleSelectedProductId = parseInt(document.getElementById('stk-sale-product').value) || null;
   saleSelectedSize = null;
@@ -2508,12 +2601,18 @@ async function loadStockLogs(page) {
   try {
     const { logs, total, limit } = await apiFetch('/api/inventory/logs?' + params.toString());
     if (!logs.length) {
-      tbody.innerHTML = '<tr><td colspan="8" class="stk-log-empty">No stock movements found.</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="9" class="stk-log-empty">No stock movements found.</td></tr>';
     } else {
       tbody.innerHTML = logs.map(l => {
         const pos = l.delta > 0;
         const deltaStr = (pos ? '+' : '') + l.delta;
         const deltaCls = pos ? 'stk-delta-pos' : 'stk-delta-neg';
+        const actions = l.reason === 'sale'
+          ? `<div style="display:flex;gap:4px">
+               <button class="stk-act-btn" onclick="openEditSaleModal(${JSON.stringify(l._id)},${Math.abs(l.delta)},${JSON.stringify(l.note||'')})">Edit</button>
+               <button class="stk-act-btn stk-act-del" onclick="deleteSaleLog(${JSON.stringify(l._id)},${JSON.stringify(l.productName)},${JSON.stringify(l.size)})">Del</button>
+             </div>`
+          : '';
         return `<tr>
           <td style="white-space:nowrap;color:var(--taupe);font-size:10px">${new Date(l.createdAt).toLocaleString()}</td>
           <td>${esc(l.productName)}</td>
@@ -2523,12 +2622,13 @@ async function loadStockLogs(page) {
           <td style="font-family:var(--serif);font-size:13px">${l.qtyAfter}</td>
           <td style="color:var(--accent);font-weight:500">${esc(l.adminUser)}</td>
           <td style="color:rgba(26,26,26,.45);font-weight:300">${esc(l.note || '—')}</td>
+          <td>${actions}</td>
         </tr>`;
       }).join('');
     }
     renderStkLogPaging(total, limit);
   } catch (err) {
-    if (tbody) tbody.innerHTML = `<tr><td colspan="8" class="stk-log-empty">Error: ${esc(err.message)}</td></tr>`;
+    if (tbody) tbody.innerHTML = `<tr><td colspan="9" class="stk-log-empty">Error: ${esc(err.message)}</td></tr>`;
   }
 }
 
@@ -2557,8 +2657,9 @@ function clearStkLogFilters() {
 // Close stock modals on Escape
 document.addEventListener('keydown', e => {
   if (e.key !== 'Escape') return;
-  if (document.getElementById('stk-sale-overlay')?.classList.contains('open'))    closeSaleModal();
-  if (document.getElementById('stk-restock-overlay')?.classList.contains('open')) closeRestockModal();
+  if (document.getElementById('stk-sale-overlay')?.classList.contains('open'))     closeSaleModal();
+  if (document.getElementById('stk-editsale-overlay')?.classList.contains('open')) closeEditSaleModal();
+  if (document.getElementById('stk-restock-overlay')?.classList.contains('open'))  closeRestockModal();
 });
 </script>
 </body>
