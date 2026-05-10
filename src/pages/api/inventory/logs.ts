@@ -37,6 +37,11 @@ export const GET: APIRoute = async ({ request, url }) => {
     const size = p.get('size');
     if (size) filter.size = String(size).trim().slice(0, 10);
 
+    const admin = p.get('admin');
+    if (admin) {
+      filter.adminUser = { $regex: escapeRegex(String(admin)), $options: 'i' };
+    }
+
     const reason = p.get('reason');
     const VALID_REASONS = new Set(['sale', 'restock', 'correction', 'return', 'damage']);
     if (reason && VALID_REASONS.has(reason)) filter.reason = reason;
